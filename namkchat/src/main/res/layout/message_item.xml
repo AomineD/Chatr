@@ -78,7 +78,7 @@
             <TextView
                 android:id="@+id/t_mediainfo"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="31dp"
                 android:fontFamily="@font/roboto"
                 android:text="En una era donde los alienigenas han invadido y conquistado el Tokyo feudal, un joven samurai busca"
                 android:textAlignment="textStart"
