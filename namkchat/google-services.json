@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "251875767554",
+    "firebase_url": "https://pelispluschromecast.firebaseio.com",
+    "project_id": "pelispluschromecast",
+    "storage_bucket": "pelispluschromecast.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:251875767554:android:7d31dc21f8ada6f5",
+        "android_client_info": {
+          "package_name": "com.app.chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "251875767554-g91t2kabjmb4h1ca0sacjiam0ac93gau.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKoO7avy_kSNkEVvWrO7ZdD441MzNxLF8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "251875767554-g91t2kabjmb4h1ca0sacjiam0ac93gau.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:251875767554:android:0b942151e75fdf2a",
+        "android_client_info": {
+          "package_name": "com.reva.app.pelispluschromecast"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "251875767554-g91t2kabjmb4h1ca0sacjiam0ac93gau.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKoO7avy_kSNkEVvWrO7ZdD441MzNxLF8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "251875767554-g91t2kabjmb4h1ca0sacjiam0ac93gau.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
