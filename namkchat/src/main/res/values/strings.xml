@@ -3,4 +3,26 @@
     <string name="hint_def">Write a message…</string>
     <string name="cancel">Cancel</string>
     <string name="send">Send</string>
+
+
+
+
+    <string name="report_cap">Report ⛔</string>
+
+    <string name="report_part_1">El capitulo</string>
+    <string name="report_part_2">tiene problemas</string>
+    <string name="errorLoad">An error has occurred</string>
+    <string name="error_connect">Connection error</string>
+    <string name="success_connect">Successful connection</string>
+    <string name="success_code">Correct code!</string>
+    <string name="social_networks_info">Join our social networks</string>
+
+    <string name="select_player">Select player</string>
+    <string name="info_player">All our content is supported by other applications, so we invite you to install some of the following players so you can enjoy our app</string>
+    <string name="player_go">Play</string>
+    <string name="please_wait">Please wait...</string>
+
+    <string name="m3u_empty">Report this chapter or channel to our technical support team, to review it with the report button displayed</string>
+    <string name="out_memory">Your cell phone has little available memory :(</string>
+
 </resources>

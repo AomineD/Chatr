@@ -4,4 +4,23 @@
 
     <string name="cancel">Cancelar</string>
     <string name="send">Enviar</string>
+
+
+    <string name="report_cap">Reportar ⛔</string>
+
+    <string name="report_part_1">El capitulo</string>
+    <string name="report_part_2">tiene problemas</string>
+    <string name="errorLoad">Ha ocurrido un error</string>
+    <string name="error_connect">Error de conexión</string>
+    <string name="success_connect">Conexión exitosa</string>
+    <string name="success_code">Codigo correcto!</string>
+    <string name="social_networks_info">Únete a nuestras redes sociales</string>
+
+    <string name="select_player">Seleccionar reproductor</string>
+    <string name="info_player">Todo nuestro contenido se apoya en otras aplicaciones, por ello te invitamos a instalar algunos de los siguientes reproductores para asi puedas disfrutar de nuestra app</string>
+    <string name="player_go">Reproducir</string>
+    <string name="please_wait">Por favor espera...</string>
+
+    <string name="m3u_empty">Reporta a nuestro equipo de soporte tecnico este capitulo o canal, para revisarlo con el boton de reportar mostrado</string>
+    <string name="out_memory">Tu celular tiene poca memoria disponible :(</string>
 </resources>

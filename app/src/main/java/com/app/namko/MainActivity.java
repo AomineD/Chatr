@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.app.chat.NamkoFragment;
+import com.app.chat.ViewListActivity;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -43,6 +44,8 @@ fr.setDebg(true);
         });
 
 
+        ViewListActivity.openM3uView(this, "http://54.39.147.50:777/ale.m3u", "TV");
+
         fr.setColors(getResources().getColor(R.color.colorAccent), getResources().getColor(R.color.colorPrimaryDark), getResources().getColor(R.color.colorAccent), getResources().getColor(R.color.white), getResources().getColor(R.color.black), getResources().getColor(R.color.white));
         new Timer().schedule(new TimerTask() {
             @Override
@@ -52,7 +55,7 @@ runOnUiThread(new Runnable() {
     public void run() {
        // Log.e("MAIN", "run: "+getResources().getColor(R.color.white));
 
-        sendPersonalized();
+     ///   sendPersonalized();
     }
 });
 
