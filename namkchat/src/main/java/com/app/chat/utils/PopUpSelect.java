@@ -126,7 +126,7 @@ onBackPressed();
     }
 
     private void OpenWithMX() {
-        String packageName = "";//Configs.nombre_paquete_player;
+        String packageName = "com.flix.mediaplayer";//Configs.nombre_paquete_player;
 try {
     Intent mx = new Intent(Intent.ACTION_VIEW);
 mx.setPackage(packageName);
