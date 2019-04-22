@@ -66,7 +66,7 @@ public class TvFragment extends Fragment implements ApiM3uGet.M3uResponse {
         url_getter = urr;
         name_list = name;
 
-        GetDataFromUrl();
+      //  GetDataFromUrl();
     }
 
     @Override
