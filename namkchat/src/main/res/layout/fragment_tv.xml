@@ -25,37 +25,34 @@
 
 
         <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/refresh_ly"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/refresh_ly"
             android:layout_marginTop="50dp"
 
-            >  <!--android:layout_above="@id/banner_container"-->
+            android:visibility="visible">  <!--android:layout_above="@id/banner_container"-->
 
             <android.support.v7.widget.RecyclerView
 
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
                 android:id="@+id/list_m3u"
-                />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
         </android.support.v4.widget.SwipeRefreshLayout>
 
 
         <RelativeLayout
+            android:id="@+id/error_connect"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/error_connect"
-            android:visibility="gone"
-            >
+            android:visibility="gone">
 
             <ImageView
                 android:layout_width="150dp"
                 android:layout_height="150dp"
 
-                app:srcCompat="@drawable/no_connection"
                 android:layout_centerInParent="true"
-                />
+                app:srcCompat="@drawable/no_connection" />
 
             <TextView
                 android:layout_width="match_parent"

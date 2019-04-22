@@ -129,7 +129,10 @@ public class TvFragment extends Fragment implements ApiM3uGet.M3uResponse {
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                if(beginStart)
                 getDataFromZero();
+else
+    refreshLayout.setRefreshing(false);
             }
         });
 
@@ -138,7 +141,10 @@ public class TvFragment extends Fragment implements ApiM3uGet.M3uResponse {
         SetupList();
 if(beginStart)
         GetDataFromUrl();
-
+else {
+ refreshLayout.setVisibility(View.GONE);
+    relative_error.setVisibility(View.VISIBLE);
+}
     }
 
     private void SetupSearchs() {
@@ -236,10 +242,10 @@ if(beginStart)
 
 
     private void GetDataFromUrl() {
-        if(!url_getter.isEmpty()) {
+        if(beginStart && !url_getter.isEmpty()) {
             //    Log.e("MAIN", "GetDataFromUrl: Cargo");
          //   adapter = new MediaItemsAdapter(getContext(), mediaItems, isUser,getActivity());
-            ApiM3uGet Api = new ApiM3uGet(getActivity(), url_getter, this);
+            ApiM3uGet Api = new ApiM3uGet(getContext(), url_getter, this);
             Api.Execute();
         }
     }

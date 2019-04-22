@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                fr.openM3uView("http://54.39.147.50:777/ale.m3u", "");
+          //      fr.openM3uView("http://54.39.147.50:777/ale.m3u", "");
             }
         }, 3000);
 
