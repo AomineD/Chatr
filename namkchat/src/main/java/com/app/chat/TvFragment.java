@@ -327,6 +327,7 @@ else {
 
     public void setAd(PopUpSelect.ClickAd a){
 PopUpSelect.clicking = a;
+
     }
 
     public void playMedia(){
