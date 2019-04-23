@@ -25,6 +25,7 @@ import com.app.chat.adapter.MediaItemsAdapter;
 import com.app.chat.model.MediaItem;
 import com.app.chat.utils.ApiM3uGet;
 import com.app.chat.utils.DonotTouch;
+import com.app.chat.utils.PopUpSelect;
 
 import java.util.ArrayList;
 
@@ -324,6 +325,13 @@ else {
     }
 
 
+    public void setAd(PopUpSelect.ClickAd a){
+PopUpSelect.clicking = a;
+    }
 
+    public void playMedia(){
+        if(PopUpSelect.intr != null)
+        PopUpSelect.intr.Now();
+    }
 
 }

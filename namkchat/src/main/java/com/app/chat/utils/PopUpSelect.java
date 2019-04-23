@@ -98,31 +98,54 @@ onBackPressed();
 
     }
 
+    public static PlayNow intr;
+
+    public static ClickAd clicking;
+
     private void Play() {
         if(!Already) {
 
+intr = new PlayNow() {
+    @Override
+    public void Now() {
+        switch (scrollView.getCurrentItem()) {
+            case 0:
+                OpenWithMX();
+                break;
+            case 1:
+                OpenWithVlc();
+                break;
 
+        }
+        dismiss();
+    }
+};
+
+if(clicking != null){
+    clicking.Ad();
+}
 
             backwh.setVisibility(View.VISIBLE);
             Linss.setVisibility(View.GONE);
             rr.setVisibility(View.GONE);
 
-                        switch (scrollView.getCurrentItem()) {
-                            case 0:
-                                OpenWithMX();
-                                break;
-                            case 1:
-                                OpenWithVlc();
-                                break;
 
-                        }
-                        dismiss();
 
 
             Already = true;
 
 
         }
+    }
+
+    public interface PlayNow{
+        void Now();
+
+
+    }
+
+    public interface ClickAd{
+        void Ad();
     }
 
     private void OpenWithMX() {
