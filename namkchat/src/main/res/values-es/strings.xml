@@ -11,7 +11,7 @@
     <string name="report_part_1">El capitulo</string>
     <string name="report_part_2">tiene problemas</string>
     <string name="errorLoad">Ha ocurrido un error</string>
-    <string name="error_connect">Error de conexión</string>
+    <string name="error_connect">Estamos en manenimiento</string>
     <string name="success_connect">Conexión exitosa</string>
     <string name="success_code">Codigo correcto!</string>
     <string name="social_networks_info">Únete a nuestras redes sociales</string>

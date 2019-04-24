@@ -10,7 +10,7 @@
     <string name="report_part_1">El capitulo</string>
     <string name="report_part_2">tiene problemas</string>
     <string name="errorLoad">An error has occurred</string>
-    <string name="error_connect">Connection error</string>
+    <string name="error_connect">We are in maintenance</string>
     <string name="success_connect">Successful connection</string>
     <string name="success_code">Correct code!</string>
     <string name="social_networks_info">Join our social networks</string>
