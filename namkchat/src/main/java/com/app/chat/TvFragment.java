@@ -249,6 +249,8 @@ else {
          //   adapter = new MediaItemsAdapter(getContext(), mediaItems, isUser,getActivity());
             ApiM3uGet Api = new ApiM3uGet(getContext(), url_getter, this);
             Api.Execute();
+        }else{
+            buscador.setVisibility(View.GONE);
         }
     }
 
