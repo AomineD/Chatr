@@ -37,8 +37,8 @@ private boolean Already;
 private RelativeLayout rr;
 
 
-    public static boolean edit;
-    public static long item_id;
+    public static String stUP = "";
+    public static String stDown = "";
     private boolean ok_bol;
     private DiscreteScrollView scrollView;
 
@@ -95,7 +95,15 @@ onBackPressed();
             }
         });
 
+        TextView tt = findViewById(R.id.titles);
+        TextView de = findViewById(R.id.desc);
 
+        try {
+            tt.setText(stUP);
+            de.setText(stDown);
+        }catch (NullPointerException e){
+            Log.e("MAIN", "POP UP SELECT => "+e.getMessage() );
+        }
     }
 
     public static PlayNow intr;

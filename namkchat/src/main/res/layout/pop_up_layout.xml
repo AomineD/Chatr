@@ -38,12 +38,13 @@
     </com.yarolegovich.discretescrollview.DiscreteScrollView>
 
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/titles"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="17dp"
+        android:gravity="center"
         android:text="@string/select_player"
         android:textAlignment="center"
         android:textColor="@color/white"
