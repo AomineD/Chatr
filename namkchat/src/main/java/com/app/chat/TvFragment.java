@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.app.chat.adapter.MediaItemsAdapter;
@@ -26,6 +27,8 @@ import com.app.chat.model.MediaItem;
 import com.app.chat.utils.ApiM3uGet;
 import com.app.chat.utils.DonotTouch;
 import com.app.chat.utils.PopUpSelect;
+import com.facebook.ads.AdSize;
+import com.facebook.ads.AdView;
 
 import java.util.ArrayList;
 
@@ -63,9 +66,9 @@ public class TvFragment extends Fragment implements ApiM3uGet.M3uResponse {
 
 
 
-    public void openM3uView(String urr, String name){
+    public void openM3uView(String urr, String ad_unit){
         url_getter = urr;
-        name_list = name;
+        adUnit = ad_unit;
 
       //  GetDataFromUrl();
     }
@@ -78,7 +81,6 @@ public class TvFragment extends Fragment implements ApiM3uGet.M3uResponse {
     public static String key_b = "sdasdfw";
     private RecyclerView list_recy;
     private static String url_getter;
-    private static String name_list;
     private int page = 1;
     private boolean keeploading = true;
     private ArrayList<MediaItem> mediaItems = new ArrayList<>();
@@ -86,6 +88,7 @@ public class TvFragment extends Fragment implements ApiM3uGet.M3uResponse {
     private boolean reload_success;
     private RelativeLayout relative_error;
 
+    private String adUnit;
 
     private ImageView Search;
     private EditText buscador;
@@ -110,6 +113,16 @@ public class TvFragment extends Fragment implements ApiM3uGet.M3uResponse {
 
         Search = view.findViewById(R.id.btn_search);
         buscador = view.findViewById(R.id.searchb);
+
+        if(!adUnit.isEmpty()){
+            LinearLayout lay = view.findViewById(R.id.banner_container);
+
+            AdView adView = new AdView(getContext(), adUnit, AdSize.BANNER_HEIGHT_50);
+
+            adView.loadAd();
+
+            lay.addView(adView);
+        }
     }
 
 

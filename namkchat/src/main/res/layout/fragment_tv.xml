@@ -12,8 +12,10 @@
         xmlns:ads="http://schemas.android.com/apk/res-auto"
         tools:context=".ViewListActivity">
 
-
-
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_above="@id/banner_container"
+            android:layout_height="match_parent">
 
 
         <ImageView
@@ -101,6 +103,21 @@
             android:layout_alignParentTop="true"
             />
 
+
+</RelativeLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:id="@+id/banner_container"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical">
+
+        </LinearLayout>
+
     </RelativeLayout>
+
+
 
 </FrameLayout>
