@@ -114,7 +114,7 @@ public class TvFragment extends Fragment implements ApiM3uGet.M3uResponse {
         Search = view.findViewById(R.id.btn_search);
         buscador = view.findViewById(R.id.searchb);
 
-        if(!adUnit.isEmpty()){
+        if(!adUnit.isEmpty() && beginStart){
             LinearLayout lay = view.findViewById(R.id.banner_container);
 
             AdView adView = new AdView(getContext(), adUnit, AdSize.BANNER_HEIGHT_50);
