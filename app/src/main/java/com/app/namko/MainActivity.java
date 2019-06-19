@@ -17,7 +17,7 @@ import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TvFragment fr;
+    private NamkoFragment fr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,18 +27,18 @@ public class MainActivity extends AppCompatActivity {
 
         FragmentManager fragmentManager = getSupportFragmentManager();
 
-       fr = new TvFragment();
+       fr = new NamkoFragment();
 
 
         fragmentManager.beginTransaction().replace(R.id.frg, fr).commitAllowingStateLoss();
 
-        fr.setAd(new PopUpSelect.ClickAd() {
+       /* fr.setAd(new PopUpSelect.ClickAd() {
             @Override
             public void Ad() {
                 Toast.makeText(MainActivity.this, "Sale anuncio", Toast.LENGTH_SHORT).show();
 fr.playMedia();
             }
-        });
+        });*/
 
 
 
@@ -46,7 +46,7 @@ fr.playMedia();
             @Override
             public void run() {
                 TvFragment.beginStart = true;
-               fr.openM3uView("http://54.39.147.50:777/ale.m3u", "");
+           //    fr.openM3uView("http://54.39.147.50:777/ale.m3u", "");
             }
         }, 0);
 

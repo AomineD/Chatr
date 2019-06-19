@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -27,6 +28,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
+import com.labo.kaji.fragmentanimations.PushPullAnimation;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -39,6 +41,15 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class NamkoFragment extends Fragment {
 
+
+    @Override
+    public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
+        if (enter) {
+            return PushPullAnimation.create(PushPullAnimation.UP, enter, 1200);
+        } else {
+            return PushPullAnimation.create(PushPullAnimation.DOWN, enter, 1200);
+        }
+    }
 
     public NamkoFragment() {
         // Required empty public constructor
