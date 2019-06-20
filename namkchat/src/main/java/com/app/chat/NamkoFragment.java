@@ -45,9 +45,9 @@ public class NamkoFragment extends Fragment {
     @Override
     public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
         if (enter) {
-            return PushPullAnimation.create(PushPullAnimation.UP, enter, 1200);
+            return PushPullAnimation.create(PushPullAnimation.UP, enter, 800);
         } else {
-            return PushPullAnimation.create(PushPullAnimation.DOWN, enter, 1200);
+            return PushPullAnimation.create(PushPullAnimation.DOWN, enter, 800);
         }
     }
 
@@ -321,6 +321,7 @@ SetupadapteR();
 public void setDebg (boolean ss){
     isDebug = ss;
 }
+public String keyactual;
 
 
 
@@ -335,8 +336,14 @@ public void setDebg (boolean ss){
                 if (m != null && isRudness(m.getMesg())) {
 
                    m.setMesg(transform(m.getMesg()));
+                   keyactual = dataSnapshot.getKey();
 
+                }else{
+                    return;
+                }
 
+                if(dataSnapshot.getKey().equals(keyactual)){
+                    return;
                 }
 
 
