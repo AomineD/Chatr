@@ -20,6 +20,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.app.chat.adapter.MessageAdapter;
+import com.app.chat.model.Message;
 import com.app.chat.model.MessageReceive;
 import com.app.chat.model.MessageSend;
 import com.google.firebase.database.ChildEventListener;
@@ -40,6 +41,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * A simple {@link Fragment} subclass.
  */
 public class NamkoFragment extends Fragment {
+
+    public boolean withAds;
+
 
 
     @Override
@@ -322,7 +326,8 @@ public void setDebg (boolean ss){
     isDebug = ss;
 }
 public String keyactual;
-
+private int fr;
+public static final int mansi = 3;
 
 
     // =========================== CONFIG REFERENCE ========================== //
@@ -356,6 +361,18 @@ public String keyactual;
 
                 if(isDebug){
                     Log.e("MAIN", "onChildAdded: m es null = "+dataSnapshot.getKey()+(" mensaje  = ") + (m!=null ? m.getMesg(): "ES NULL PAPA"));
+                }
+
+
+                if(withAds) {
+                    if (fr >= mansi) {
+                        MessageReceive mw = new MessageReceive();
+                        mw.isAd = true;
+                        adapter.addMessage(mw);
+                        fr = 0;
+                    } else {
+                        fr++;
+                    }
                 }
 
                 adapter.addMessage(m);

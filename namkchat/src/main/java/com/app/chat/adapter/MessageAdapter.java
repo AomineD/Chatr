@@ -19,6 +19,8 @@ import android.widget.TextView;
 import com.app.chat.NamkoFragment;
 import com.app.chat.R;
 import com.app.chat.model.MessageReceive;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
@@ -95,75 +97,88 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     @Override
     public void onBindViewHolder(@NonNull MessageViewHolder messageViewHolder, final int i) {
-        messageViewHolder.name.setText(messageOf.get(i).getName_of());
-        messageViewHolder.mesn.setText(messageOf.get(i).getMesg());
-
-        Picasso.get().load(Uri.parse(messageOf.get(i).getUrlProfilePic())).placeholder(R.drawable.ic_avatar_default).fit().into(messageViewHolder.prf_pic);
-
-        Long codigoHora = messageOf.get(i).getHora();
-
-        Date d = new Date(codigoHora);
-
-        SimpleDateFormat ss = new SimpleDateFormat("hh:mm:ss a");
-
-        messageViewHolder.time.setText(ss.format(d));
 
 
-        if(messageOf.get(i).getSnap().equals(idMain) && card_backcolorAssigned){
-            messageViewHolder.backing.setCardBackgroundColor(card_main);
-            messageViewHolder.mesn.setTextColor(textColorM);
-            messageViewHolder.time.setTextColor(textColorM);
-            messageViewHolder.name.setTextColor(textColorM);
-        }else if(card_backcolorAssigned){
-           // Log.e("MAIN", "onBindViewHolder: OTRO COLOR");
-            messageViewHolder.backing.setCardBackgroundColor(another_cards);
-            messageViewHolder.mesn.setTextColor(textColorMa);
-            messageViewHolder.time.setTextColor(textColorMa);
-            messageViewHolder.name.setTextColor(textColorMa);
-        }
+        if(messageOf.get(i).isAd){
+            if(!messageViewHolder.adView.isLoading())
+            messageViewHolder.adView.loadAd(new AdRequest.Builder().build());
 
-        if(messageOf.get(i).getType_mensaje().equals("1"))
-        {
+            messageViewHolder.adView.setVisibility(View.VISIBLE);
+            messageViewHolder.base.setVisibility(View.GONE);
+        }else {
 
-            if(card_backcolorAssigned){
-                messageViewHolder.card_back.setCardBackgroundColor(card_backcolor);
+            messageViewHolder.adView.setVisibility(View.GONE);
+            messageViewHolder.base.setVisibility(View.VISIBLE);
+
+            messageViewHolder.name.setText(messageOf.get(i).getName_of());
+            messageViewHolder.mesn.setText(messageOf.get(i).getMesg());
+
+            Picasso.get().load(Uri.parse(messageOf.get(i).getUrlProfilePic())).placeholder(R.drawable.ic_avatar_default).fit().into(messageViewHolder.prf_pic);
+
+            Long codigoHora = messageOf.get(i).getHora();
+
+            Date d = new Date(codigoHora);
+
+            SimpleDateFormat ss = new SimpleDateFormat("hh:mm:ss a");
+
+            messageViewHolder.time.setText(ss.format(d));
+
+
+            if (messageOf.get(i).getSnap().equals(idMain) && card_backcolorAssigned) {
+                messageViewHolder.backing.setCardBackgroundColor(card_main);
+                messageViewHolder.mesn.setTextColor(textColorM);
+                messageViewHolder.time.setTextColor(textColorM);
+                messageViewHolder.name.setTextColor(textColorM);
+            } else if (card_backcolorAssigned) {
+                // Log.e("MAIN", "onBindViewHolder: OTRO COLOR");
+                messageViewHolder.backing.setCardBackgroundColor(another_cards);
+                messageViewHolder.mesn.setTextColor(textColorMa);
+                messageViewHolder.time.setTextColor(textColorMa);
+                messageViewHolder.name.setTextColor(textColorMa);
             }
 
-            messageViewHolder.mediaText.setVisibility(View.VISIBLE);
-            messageViewHolder.mediaPhoto.setVisibility(View.VISIBLE);
-            messageViewHolder.actionbtn.setVisibility(View.VISIBLE);
-            messageViewHolder.card_back.setVisibility(View.VISIBLE);
+            if (messageOf.get(i).getType_mensaje().equals("1")) {
 
-
-            messageViewHolder.mediaText.setText(messageOf.get(i).getDescmedia());
-            messageViewHolder.actionbtn.setText(messageOf.get(i).getAction());
-
-            messageViewHolder.mesn.setGravity(Gravity.CENTER);
-
-
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            params.setMargins(0,10,0,0);
-            messageViewHolder.mesn.setLayoutParams(params);
-
-            messageViewHolder.mesn.setTypeface(null, Typeface.BOLD);
-            messageViewHolder.mediaText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-            messageViewHolder.mesn.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-
-
-            Picasso.get().load(Uri.parse(messageOf.get(i).getUrl_img_media())).into(messageViewHolder.mediaPhoto);
-
-            messageViewHolder.actionbtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    clickmedia.onClickMedia(messageOf.get(i).getDataToClick());
+                if (card_backcolorAssigned) {
+                    messageViewHolder.card_back.setCardBackgroundColor(card_backcolor);
                 }
-            });
 
-        }else{
-            messageViewHolder.mediaText.setVisibility(View.GONE);
-            messageViewHolder.mediaPhoto.setVisibility(View.GONE);
-            messageViewHolder.actionbtn.setVisibility(View.GONE);
-            messageViewHolder.card_back.setVisibility(View.GONE);
+                messageViewHolder.mediaText.setVisibility(View.VISIBLE);
+                messageViewHolder.mediaPhoto.setVisibility(View.VISIBLE);
+                messageViewHolder.actionbtn.setVisibility(View.VISIBLE);
+                messageViewHolder.card_back.setVisibility(View.VISIBLE);
+
+
+                messageViewHolder.mediaText.setText(messageOf.get(i).getDescmedia());
+                messageViewHolder.actionbtn.setText(messageOf.get(i).getAction());
+
+                messageViewHolder.mesn.setGravity(Gravity.CENTER);
+
+
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                params.setMargins(0, 10, 0, 0);
+                messageViewHolder.mesn.setLayoutParams(params);
+
+                messageViewHolder.mesn.setTypeface(null, Typeface.BOLD);
+                messageViewHolder.mediaText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                messageViewHolder.mesn.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+
+                Picasso.get().load(Uri.parse(messageOf.get(i).getUrl_img_media())).into(messageViewHolder.mediaPhoto);
+
+                messageViewHolder.actionbtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        clickmedia.onClickMedia(messageOf.get(i).getDataToClick());
+                    }
+                });
+
+            } else {
+                messageViewHolder.mediaText.setVisibility(View.GONE);
+                messageViewHolder.mediaPhoto.setVisibility(View.GONE);
+                messageViewHolder.actionbtn.setVisibility(View.GONE);
+                messageViewHolder.card_back.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -183,15 +198,18 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         private ImageView mediaPhoto;
         private TextView mesn;
         private CardView backing;
+        private AdView adView;
+        private View base;
 
         public MessageViewHolder(@NonNull View itemView) {
             super(itemView);
+            base = itemView.findViewById(R.id.baselay);
             prf_pic = itemView.findViewById(R.id.prof_ic);
             name = itemView.findViewById(R.id.t_name);
             time = itemView.findViewById(R.id.t_time);
             mesn = itemView.findViewById(R.id.t_messg);
             backing = itemView.findViewById(R.id.bacj);
-
+adView = itemView.findViewById(R.id.adView);
             actionbtn = itemView.findViewById(R.id.actionmedia);
             card_back = itemView.findViewById(R.id.card_back);
             mediaPhoto = itemView.findViewById(R.id.media_f);

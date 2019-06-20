@@ -1,6 +1,9 @@
 package com.app.chat.model;
 
 public class Message {
+
+    public boolean isAd;
+
     public String getMesg() {
         return mesg;
     }
