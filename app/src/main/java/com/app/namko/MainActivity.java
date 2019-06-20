@@ -30,6 +30,12 @@ public class MainActivity extends AppCompatActivity {
        fr = new NamkoFragment();
 
 
+       fr.setLang_chat("Colombia");
+       fr.setNameP("Diego");
+       fr.setDebg(true);
+      fr.setIdentifier("kee2012406");
+       // fr.setUrrPhoto("");
+
         fragmentManager.beginTransaction().replace(R.id.frg, fr).commitAllowingStateLoss();
 
        /* fr.setAd(new PopUpSelect.ClickAd() {

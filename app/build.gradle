@@ -27,9 +27,8 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
    // implementation 'com.github.AomineD:Namko:1.0.4'
-   // implementation project(path: ':namkchat')
+    implementation project(path: ':namkchat')
 
-    implementation 'com.github.AomineD:Chatr:1.1.1'
 
     /*implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
@@ -46,4 +45,4 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828' //Recortar Imagen Descargar Imagen*/
 
 }
-//apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.gms.google-services'

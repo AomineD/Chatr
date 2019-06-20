@@ -338,9 +338,11 @@ public String keyactual;
                    m.setMesg(transform(m.getMesg()));
 
 
-                }else{
+                }else if(m == null){
                     return;
                 }
+
+            //    Log.e("MAIN", "onChildAdded: "+dataSnapshot.getKey() );
 
                 if(dataSnapshot.getKey().equals(keyactual)){
                     return;
@@ -348,8 +350,9 @@ public String keyactual;
 
                 keyactual = dataSnapshot.getKey();
 
+
                 if(isDebug){
-                    Log.e("MAIN", "onChildAdded: m es null = "+m.getSnap()+(" mensaje  = ") + (m!=null ? m.getMesg(): "ES NULL PAPA"));
+                    Log.e("MAIN", "onChildAdded: m es null = "+dataSnapshot.getKey()+(" mensaje  = ") + (m!=null ? m.getMesg(): "ES NULL PAPA"));
                 }
 
                 adapter.addMessage(m);
