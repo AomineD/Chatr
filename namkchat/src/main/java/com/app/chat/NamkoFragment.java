@@ -336,7 +336,7 @@ public String keyactual;
                 if (m != null && isRudness(m.getMesg())) {
 
                    m.setMesg(transform(m.getMesg()));
-                   keyactual = dataSnapshot.getKey();
+
 
                 }else{
                     return;
@@ -346,6 +346,7 @@ public String keyactual;
                     return;
                 }
 
+                keyactual = dataSnapshot.getKey();
 
                 if(isDebug){
                     Log.e("MAIN", "onChildAdded: m es null = "+m.getSnap()+(" mensaje  = ") + (m!=null ? m.getMesg(): "ES NULL PAPA"));
