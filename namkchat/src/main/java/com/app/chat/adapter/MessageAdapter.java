@@ -19,8 +19,9 @@ import android.widget.TextView;
 import com.app.chat.NamkoFragment;
 import com.app.chat.R;
 import com.app.chat.model.MessageReceive;
+import com.facebook.ads.AdSize;
+import com.facebook.ads.AdView;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
@@ -36,6 +37,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     private int card_backcolor;
     private int card_main;
     private int actiomtextcolor;
+
+    public void setIdBanner(String id_intersticial) {
+        this.id_intersticial = id_intersticial;
+    }
+
+    private String id_intersticial;
     private boolean card_backcolorAssigned;
 
     public void setActiomtextcolor(int actiomtextcolor) {
@@ -100,9 +107,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
 
         if(messageOf.get(i).isAd){
-            if(!messageViewHolder.adView.isLoading())
-            messageViewHolder.adView.loadAd(new AdRequest.Builder().build());
-
+            if(!messageViewHolder.isAdLoaded) {
+                messageViewHolder.adView2 = new AdView(mContext, id_intersticial, AdSize.BANNER_HEIGHT_50);
+                messageViewHolder.adView2.loadAd();
+                messageViewHolder.adView.addView(messageViewHolder.adView2);
+messageViewHolder.isAdLoaded = true;
+            }
             messageViewHolder.adView.setVisibility(View.VISIBLE);
             messageViewHolder.base.setVisibility(View.GONE);
         }else {
@@ -189,6 +199,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     class MessageViewHolder extends RecyclerView.ViewHolder {
 
+        private boolean isAdLoaded;
         private CircleImageView prf_pic;
         private TextView name;
         private TextView time;
@@ -198,7 +209,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         private ImageView mediaPhoto;
         private TextView mesn;
         private CardView backing;
-        private AdView adView;
+        private LinearLayout adView;
+        private AdView adView2;
         private View base;
 
         public MessageViewHolder(@NonNull View itemView) {
@@ -209,7 +221,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             time = itemView.findViewById(R.id.t_time);
             mesn = itemView.findViewById(R.id.t_messg);
             backing = itemView.findViewById(R.id.bacj);
-adView = itemView.findViewById(R.id.adView);
+adView = itemView.findViewById(R.id.layad);
             actionbtn = itemView.findViewById(R.id.actionmedia);
             card_back = itemView.findViewById(R.id.card_back);
             mediaPhoto = itemView.findViewById(R.id.media_f);

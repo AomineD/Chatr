@@ -42,7 +42,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class NamkoFragment extends Fragment {
 
-    public boolean withAds;
+    public void setWithAds(boolean withAds, String adbanner) {
+        this.withAds = withAds;
+        this.id_banner = adbanner;
+    }
+
+    private boolean withAds;
+    private String id_banner;
 
 
 
@@ -292,6 +298,11 @@ SetupadapteR();
             adapter.setTextColorM(cc[4]);
             adapter.setTextColorMa(cc[5]);
         }
+
+        if(withAds){
+            adapter.setIdBanner(id_banner);
+        }
+
         adapter.setIdMain(identifier);
     }
 
