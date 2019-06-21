@@ -52,15 +52,6 @@ public class NamkoFragment extends Fragment {
 
 
 
-    @Override
-    public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
-        if (enter) {
-            return PushPullAnimation.create(PushPullAnimation.UP, enter, 800);
-        } else {
-            return PushPullAnimation.create(PushPullAnimation.DOWN, enter, 800);
-        }
-    }
-
     public NamkoFragment() {
         // Required empty public constructor
     }
