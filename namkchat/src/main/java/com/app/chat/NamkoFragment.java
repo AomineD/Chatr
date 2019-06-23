@@ -123,6 +123,9 @@ public class NamkoFragment extends Fragment {
 
     public void setBackgdrawable(int backgdrawable) {
         this.backgdrawable = backgdrawable;
+        if(getContext() != null && bk != null){
+            SetupBackground();
+        }
     }
 
     private int backgdrawable;
