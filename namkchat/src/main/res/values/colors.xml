@@ -11,4 +11,7 @@
     <color name="white">#FFFFFF</color>
 
     <color name="tran">#00000000</color>
+
+    <color name="colorHeaderText">#000000</color>
+    <color name="colorHeader" >#ffffff</color>
 </resources>

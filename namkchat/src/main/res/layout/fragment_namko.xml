@@ -24,7 +24,7 @@
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/black"
+            app:cardBackgroundColor="@color/colorHeader"
             >
 
             <LinearLayout
@@ -48,7 +48,7 @@
                     android:paddingStart="5dp"
                     android:text="Diego Garcia"
                     android:textAlignment="center"
-                    android:textColor="@color/white"
+                    android:textColor="@color/colorHeaderText"
                     android:textSize="18sp" />
 
                 <TextView
@@ -62,7 +62,7 @@
                     android:paddingStart="5dp"
                     android:text="Channel"
                     android:textAlignment="textEnd"
-                    android:textColor="@color/white"
+                    android:textColor="@color/colorHeaderText"
                     android:textSize="18sp" />
             </LinearLayout>
 
@@ -91,7 +91,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                app:cardBackgroundColor="@color/black"
+                app:cardBackgroundColor="@color/colorHeader"
                 app:cardCornerRadius="15dp"
                 android:layout_marginEnd="5dp"
                 app:cardElevation="0dp"
@@ -105,8 +105,8 @@ android:layout_marginEnd="5dp"
 
                 android:fontFamily="@font/roboto"
                 android:hint="@string/hint_def"
-                android:textColor="@color/white"
-                android:textColorHint="@color/white" />
+                android:textColor="@color/colorHeaderText"
+                android:textColorHint="@color/colorHeaderText" />
             </android.support.v7.widget.CardView>
 
             <android.support.design.widget.FloatingActionButton
@@ -114,7 +114,8 @@ android:layout_marginEnd="5dp"
                 android:layout_width="44dp"
                 android:layout_height="44dp"
                 android:layout_gravity="center_vertical"
-                app:backgroundTint="@color/black"
+                app:backgroundTint="@color/colorHeader"
+                android:tint="@color/colorHeaderText"
                 app:fabCustomSize="48dp"
                 app:srcCompat="@drawable/send_ic" />
         </LinearLayout>
