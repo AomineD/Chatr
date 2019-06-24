@@ -21,17 +21,22 @@ import com.app.chat.R;
 import com.app.chat.model.MessageReceive;
 import com.facebook.ads.AdSize;
 import com.facebook.ads.AdView;
-import com.google.android.gms.ads.AdRequest;
 import com.squareup.picasso.Picasso;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
 
+    private static final String TAG = "MAIN";
     private Context mContext;
     private ArrayList<MessageReceive> messageOf = new ArrayList<>();
     private int card_backcolor;
@@ -127,11 +132,22 @@ messageViewHolder.isAdLoaded = true;
 
             Long codigoHora = messageOf.get(i).getHora();
 
-            Date d = new Date(codigoHora);
+
+            try {
+
+              String text =  getTimingt(codigoHora);
+                messageViewHolder.time.setText(text);
+            } catch (Exception e) {
+                e.printStackTrace();
+                messageViewHolder.time.setText("Incalculate");
+                Log.e(TAG, "onBindViewHolder: "+e.getMessage());
+            }
+
+          /*  Date d = new Date(codigoHora);
 
             SimpleDateFormat ss = new SimpleDateFormat("hh:mm:ss a");
+*/
 
-            messageViewHolder.time.setText(ss.format(d));
 
 
             if (messageOf.get(i).getSnap().equals(idMain) && card_backcolorAssigned) {
@@ -189,6 +205,44 @@ messageViewHolder.isAdLoaded = true;
                 messageViewHolder.actionbtn.setVisibility(View.GONE);
                 messageViewHolder.card_back.setVisibility(View.GONE);
             }
+        }
+    }
+
+    private String getTimingt(Long pastvalue) {
+
+       // long pastvalue = Long.parseLong(codigoHora);
+        // Default time zone.
+        DateTime zulu = DateTime.now(DateTimeZone.UTC);
+
+
+        //   Log.e(TAG, "getTimingt: MENSAJE "+pastvalue);
+
+        //     Log.e(TAG, "getTimingt: AHORA "+zulu.getMillis() + " NOW ES "+pastvalue);
+        long mint = TimeUnit.MILLISECONDS.toMinutes(zulu.toInstant().getMillis() - pastvalue);
+
+        if (mint < 60) {
+            if (mint > 1)
+                return "Hace " + mint + " minutos";
+            else
+                return "Hace " + mint + " minuto";
+        } else {
+            long horas = TimeUnit.MILLISECONDS.toHours(zulu.toDate().getTime() - pastvalue);
+
+            if (horas < 24) {
+                if (horas > 1)
+                    return "Hace " + horas + " horas";
+                else
+                    return "Hace " + horas + " hora";
+            } else {
+                long dias = TimeUnit.MILLISECONDS.toDays(zulu.toDate().getTime() - pastvalue);
+
+                if (dias > 1) {
+                    return "Hace " + dias + " dias";
+                } else
+                    return "Hace " + dias + " dia";
+            }
+
+
         }
     }
 

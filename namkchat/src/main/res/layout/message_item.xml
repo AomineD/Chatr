@@ -73,6 +73,7 @@
                 android:fontFamily="@font/roboto"
                 android:text="Hola como estan locos"
                 android:textAlignment="textStart"
+                android:gravity="start"
                 android:textColor="@color/black"
                 android:textSize="14sp" />
 

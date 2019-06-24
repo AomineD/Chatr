@@ -27,34 +27,15 @@ public class MainActivity extends AppCompatActivity {
 
         FragmentManager fragmentManager = getSupportFragmentManager();
 
-       fr = new NamkoFragment();
+        fr = new NamkoFragment();
 
 
-       fr.setLang_chat("Colombia");
-       fr.setNameP("Diego");
-       fr.setDebg(true);
-      fr.setIdentifier("kee2012406");
-       // fr.setUrrPhoto("");
+        fr.setLang_chat("Latino \uD83C\uDDF2\uD83C\uDDFD");
+        fr.setNameP("Diego");
+        // fr.setDebg(true);
+        fr.setIdentifier("kee2012406");
 
         fragmentManager.beginTransaction().replace(R.id.frg, fr).commitAllowingStateLoss();
-
-       /* fr.setAd(new PopUpSelect.ClickAd() {
-            @Override
-            public void Ad() {
-                Toast.makeText(MainActivity.this, "Sale anuncio", Toast.LENGTH_SHORT).show();
-fr.playMedia();
-            }
-        });*/
-
-
-
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                TvFragment.beginStart = true;
-           //    fr.openM3uView("http://54.39.147.50:777/ale.m3u", "");
-            }
-        }, 0);
 
     }
 

@@ -15,14 +15,18 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.Toast;
 
 import com.app.chat.adapter.MessageAdapter;
 import com.app.chat.model.Message;
 import com.app.chat.model.MessageReceive;
 import com.app.chat.model.MessageSend;
+import com.facebook.ads.AdSize;
+import com.facebook.ads.AdView;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,7 +36,11 @@ import com.google.firebase.database.ServerValue;
 import com.labo.kaji.fragmentanimations.PushPullAnimation;
 import com.squareup.picasso.Picasso;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -49,8 +57,20 @@ public class NamkoFragment extends Fragment {
 
     private boolean withAds;
     private String id_banner;
+    private long diasMax = 5;
+    private int saizMax = 1000;
+
+    /**
+     Si pasa de estos días sera borrado el mensaje
+      **/
+public void setDiasMaximos(long diasmax){
+    this.diasMax = diasmax;
+}
 
 
+public void setMaxMessage(int max){
+    this.saizMax = max;
+}
 
     public NamkoFragment() {
         // Required empty public constructor
@@ -108,6 +128,9 @@ public class NamkoFragment extends Fragment {
         database = FirebaseDatabase.getInstance();
         databaseReference = database.getReference(lang_chat);
 
+        if(adapter == null){
+            adapter = new MessageAdapter(getActivity(), messageArrayList);
+        }
         SetupRef();
 
         if(lang_c != null){
@@ -272,6 +295,16 @@ getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT
 SetupadapteR();
 
 
+if(getContext() != null && withAds) {
+    LinearLayout d = v.findViewById(R.id.containads);
+
+    AdView ad = new AdView(getContext(), id_banner, AdSize.BANNER_HEIGHT_50);
+
+    ad.loadAd();
+
+    d.addView(ad);
+}
+
         return v;
     }
 
@@ -347,15 +380,18 @@ public static final int mansi = 3;
 
                    m.setMesg(transform(m.getMesg()));
 
-
                 }
 
 
                 if(m == null){
                     return;
+                }else {
+                    if(getTimeInInteger(m.getHora())){
+                        dataSnapshot.getRef().removeValue();
+                    }
                 }
 
-            //    Log.e("MAIN", "onChildAdded: "+dataSnapshot.getKey() );
+
 
                 if(dataSnapshot.getKey().equals(keyactual)){
                     return;
@@ -380,7 +416,24 @@ public static final int mansi = 3;
                     }
                 }
 
-                adapter.addMessage(m);
+
+
+                if(!getTimeInInteger(m.getHora()) && adapter != null) {
+                    Log.e("MAIN", "onChildAdded: "+adapter.getItemCount());
+                    adapter.addMessage(m);
+                }else if(adapter == null){
+                    Log.e("MAIN", "onChildAdded: 0pp" );
+                    messageArrayList.add(m);
+                }
+
+                if(messageArrayList.size() >= saizMax){
+                    if(isLongTo(m.getHora(), 1)){
+                        dataSnapshot.getRef().removeValue();
+                    }
+                }
+   // Log.e("MAIN", "onChildAdded: "+messageArrayList.size());
+
+
             }
 
             @Override
@@ -403,11 +456,15 @@ public static final int mansi = 3;
 
             }
         });
+
+
+
+
     }
 
 
     private void SendMessage(boolean isMedia) {
-        if (database != null) {
+        if (database != null && !message.getText().toString().isEmpty()) {
             MessageSend mss = new MessageSend();
 
             mss.setHora(ServerValue.TIMESTAMP);
@@ -437,6 +494,8 @@ mss.setSnap(identifier);
             if (isDebug)
                 Log.e("MAIN", "SendMessage: MENSAJE ENVIADO = " + mss);
             //adapter.addMessage(mss);
+        }else if(message.getText().toString().isEmpty()){
+            Toast.makeText(getContext(), "Mensaje vacío? oh no", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -454,32 +513,33 @@ public interface OnClickmedia{
 
 public void SendPersonalizedMessage(String titlediua, final String message, final String mediainfo, final String urlmedia, final String act,final String clickmedia){
 
-    final DialogYouWant dialogYouWant = new DialogYouWant(getContext());
+    if(getActivity() != null) {
+        final DialogYouWant dialogYouWant = new DialogYouWant(getActivity());
 
-    dialogYouWant.setTit(titlediua);
+        dialogYouWant.setTit(titlediua);
 
-    dialogYouWant.setUrl_img(urlmedia);
-    dialogYouWant.setClicking(new DialogYouWant.OnClickYORNOT() {
-        @Override
-        public void OnClickYes() {
-       mediamess = message;
-       url_media = urlmedia;
-       actionn = act;
-       NamkoFragment.this.mediainfo = mediainfo;
-       cl = clickmedia;
+        dialogYouWant.setUrl_img(urlmedia);
+        dialogYouWant.setClicking(new DialogYouWant.OnClickYORNOT() {
+            @Override
+            public void OnClickYes() {
+                mediamess = message;
+                url_media = urlmedia;
+                actionn = act;
+                NamkoFragment.this.mediainfo = mediainfo;
+                cl = clickmedia;
 
-            SendMessage(true);
-            dialogYouWant.dismiss();
-        }
+                SendMessage(true);
+                dialogYouWant.dismiss();
+            }
 
-        @Override
-        public void OnClickNO() {
-dialogYouWant.dismiss();
-        }
-    });
+            @Override
+            public void OnClickNO() {
+                dialogYouWant.dismiss();
+            }
+        });
 
-    dialogYouWant.show();
-
+        dialogYouWant.show();
+    }
 }
 
 private String mediamess;
@@ -487,5 +547,44 @@ private String url_media;
 private String mediainfo;
 private String actionn;
 private String cl;
+
+
+
+
+    private boolean getTimeInInteger(Long pastvalue) {
+
+        // long pastvalue = Long.parseLong(codigoHora);
+        // Default time zone.
+        DateTime zulu = DateTime.now(DateTimeZone.UTC);
+
+
+                long dias = TimeUnit.MILLISECONDS.toDays(zulu.toDate().getTime() - pastvalue);
+
+
+                return dias >= diasMax;
+
+
+
+
+    }
+
+
+    private boolean isLongTo(Long pastvalue, long max) {
+
+        // long pastvalue = Long.parseLong(codigoHora);
+        // Default time zone.
+        DateTime zulu = DateTime.now(DateTimeZone.UTC);
+
+
+        long dias = TimeUnit.MILLISECONDS.toDays(zulu.toDate().getTime() - pastvalue);
+
+
+        return dias > max;
+
+
+
+
+    }
+
 
 }
