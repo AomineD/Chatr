@@ -464,7 +464,7 @@ public static final int mansi = 3;
 
 
     private void SendMessage(boolean isMedia) {
-        if (database != null && !message.getText().toString().isEmpty()) {
+        if (database != null && (!message.getText().toString().isEmpty() || isMedia)) {
             MessageSend mss = new MessageSend();
 
             mss.setHora(ServerValue.TIMESTAMP);
