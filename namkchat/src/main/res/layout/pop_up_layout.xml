@@ -61,7 +61,7 @@
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="28dp"
         android:gravity="center"
-        android:text="@string/info_player"
+        android:text="@string/info_playerg"
         android:textColor="@color/white"
         android:textSize="12sp" />
 
