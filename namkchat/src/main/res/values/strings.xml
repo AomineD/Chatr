@@ -15,10 +15,10 @@
     <string name="success_code">Correct code!</string>
     <string name="social_networks_info">Join our social networks</string>
 
-    <string name="select_player">Select player</string>
+    <string name="select_playerg">Select player</string>
     <string name="info_playerg">All our content is supported by other applications, so we invite you to install some of the following players so you can enjoy our app</string>
-    <string name="player_go">Play</string>
-    <string name="please_wait">Please wait...</string>
+    <string name="player_gog">Play</string>
+    <string name="please_waitg">Please wait...</string>
 
     <string name="m3u_empty">Report this chapter or channel to our technical support team, to review it with the report button displayed</string>
     <string name="out_memory">Your cell phone has little available memory :(</string>

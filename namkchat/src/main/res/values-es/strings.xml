@@ -16,10 +16,10 @@
     <string name="success_code">Codigo correcto!</string>
     <string name="social_networks_info">Únete a nuestras redes sociales</string>
 
-    <string name="select_player">Seleccionar reproductor</string>
+    <string name="select_playerg">Seleccionar reproductor</string>
     <string name="info_playerg">Todo nuestro contenido se apoya en otras aplicaciones, por ello te invitamos a instalar algunos de los siguientes reproductores para asi puedas disfrutar de nuestra app</string>
-    <string name="player_go">Reproducir</string>
-    <string name="please_wait">Por favor espera...</string>
+    <string name="player_gog">Reproducir</string>
+    <string name="please_waitg">Por favor espera...</string>
 
     <string name="m3u_empty">Reporta a nuestro equipo de soporte tecnico este capitulo o canal, para revisarlo con el boton de reportar mostrado</string>
     <string name="out_memory">Tu celular tiene poca memoria disponible :(</string>
