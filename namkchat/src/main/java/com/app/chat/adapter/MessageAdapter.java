@@ -109,9 +109,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     @Override
     public void onBindViewHolder(@NonNull MessageViewHolder messageViewHolder, final int i) {
+messageViewHolder.img_admin.setVisibility(View.GONE);
 
-
-        if(messageOf.get(i).isAd){
+        if(messageOf.get(i).isAd && messageOf.get(i).getIsAdmin().equals("false")){
             if(!messageViewHolder.isAdLoaded) {
                 messageViewHolder.adView2 = new AdView(mContext, id_intersticial, AdSize.BANNER_HEIGHT_50);
                 messageViewHolder.adView2.loadAd();
@@ -120,7 +120,7 @@ messageViewHolder.isAdLoaded = true;
             }
             messageViewHolder.adView.setVisibility(View.VISIBLE);
             messageViewHolder.base.setVisibility(View.GONE);
-        }else {
+        }else if(messageOf.get(i).getIsAdmin().equals("false")){
 
             messageViewHolder.adView.setVisibility(View.GONE);
             messageViewHolder.base.setVisibility(View.VISIBLE);
@@ -199,14 +199,103 @@ messageViewHolder.isAdLoaded = true;
                     }
                 });
 
-            } else {
+            }
+            else {
                 messageViewHolder.mediaText.setVisibility(View.GONE);
                 messageViewHolder.mediaPhoto.setVisibility(View.GONE);
                 messageViewHolder.actionbtn.setVisibility(View.GONE);
                 messageViewHolder.card_back.setVisibility(View.GONE);
             }
+        } else if(messageOf.get(i).getIsAdmin().equals("true")){
+
+            SetupMessageAdmin(messageOf.get(i), messageViewHolder);
+
         }
     }
+
+    private void SetupMessageAdmin(final MessageReceive messageReceive, MessageViewHolder messageViewHolder) {
+
+        messageViewHolder.img_admin.setVisibility(View.VISIBLE);
+        messageViewHolder.adView.setVisibility(View.GONE);
+        messageViewHolder.base.setVisibility(View.VISIBLE);
+
+        messageViewHolder.name.setText(messageReceive.getName_of());
+        messageViewHolder.mesn.setText(messageReceive.getMesg());
+
+        Picasso.get().load(Uri.parse(messageReceive.getUrlProfilePic())).placeholder(R.drawable.ic_avatar_default).fit().into(messageViewHolder.prf_pic);
+
+        Long codigoHora = messageReceive.getHora();
+
+
+        try {
+
+            String text =  getTimingt(codigoHora);
+            messageViewHolder.time.setText(text);
+        } catch (Exception e) {
+            e.printStackTrace();
+            messageViewHolder.time.setText("Incalculate");
+            Log.e(TAG, "onBindViewHolder: "+e.getMessage());
+        }
+
+          /*  Date d = new Date(codigoHora);
+
+            SimpleDateFormat ss = new SimpleDateFormat("hh:mm:ss a");
+*/
+
+
+
+            messageViewHolder.backing.setCardBackgroundColor(mContext.getResources().getColor(R.color.admin_texts));
+            messageViewHolder.mesn.setTextColor(mContext.getResources().getColor(R.color.graylight));
+            messageViewHolder.time.setTextColor(mContext.getResources().getColor(R.color.graylight));
+            messageViewHolder.name.setTextColor(mContext.getResources().getColor(R.color.yellow));
+
+
+        Log.e(TAG, "SetupMessageAdmin: "+messageReceive.getType_mensaje() );
+        if (messageReceive.getType_mensaje().equals("1")) {
+
+            if (card_backcolorAssigned) {
+                messageViewHolder.card_back.setCardBackgroundColor(card_backcolor);
+            }
+
+            messageViewHolder.mediaText.setVisibility(View.VISIBLE);
+            messageViewHolder.mediaPhoto.setVisibility(View.VISIBLE);
+            messageViewHolder.actionbtn.setVisibility(View.VISIBLE);
+            messageViewHolder.card_back.setVisibility(View.VISIBLE);
+
+
+            messageViewHolder.mediaText.setText(messageReceive.getDescmedia());
+            messageViewHolder.actionbtn.setText(messageReceive.getAction());
+
+            messageViewHolder.mesn.setGravity(Gravity.CENTER);
+
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            params.setMargins(0, 10, 0, 0);
+            messageViewHolder.mesn.setLayoutParams(params);
+
+            messageViewHolder.mesn.setTypeface(null, Typeface.BOLD);
+            messageViewHolder.mediaText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            messageViewHolder.mesn.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+
+            Picasso.get().load(Uri.parse(messageReceive.getUrl_img_media())).into(messageViewHolder.mediaPhoto);
+
+            messageViewHolder.actionbtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    clickmedia.onClickMedia(messageReceive.getDataToClick());
+                }
+            });
+
+        }
+        else {
+            messageViewHolder.mediaText.setVisibility(View.GONE);
+            messageViewHolder.mediaPhoto.setVisibility(View.GONE);
+            messageViewHolder.actionbtn.setVisibility(View.GONE);
+            messageViewHolder.card_back.setVisibility(View.GONE);
+        }
+
+        }
 
     private String getTimingt(Long pastvalue) {
 
@@ -266,10 +355,12 @@ messageViewHolder.isAdLoaded = true;
         private LinearLayout adView;
         private AdView adView2;
         private View base;
+        private ImageView img_admin;
 
         public MessageViewHolder(@NonNull View itemView) {
             super(itemView);
             base = itemView.findViewById(R.id.baselay);
+            img_admin = itemView.findViewById(R.id.admin_insigne);
             prf_pic = itemView.findViewById(R.id.prof_ic);
             name = itemView.findViewById(R.id.t_name);
             time = itemView.findViewById(R.id.t_time);

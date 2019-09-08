@@ -30,10 +30,11 @@ public class MainActivity extends AppCompatActivity {
         fr = new NamkoFragment();
 
 
-        fr.setLang_chat("Latino \uD83C\uDDF2\uD83C\uDDFD");
+        fr.setLang_chat("Español \uD83C\uDDEA\uD83C\uDDF8");
         fr.setNameP("Diego");
         // fr.setDebg(true);
         fr.setIdentifier("kee2012406");
+        fr.isAdminSender = true;
 
         fragmentManager.beginTransaction().replace(R.id.frg, fr).commitAllowingStateLoss();
 

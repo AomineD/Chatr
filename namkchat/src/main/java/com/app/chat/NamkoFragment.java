@@ -229,6 +229,9 @@ return mensDef;
     public void setNameP(String n){
         this.nameF = n;
     }
+
+
+    public boolean isAdminSender = false;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -467,6 +470,7 @@ public static final int mansi = 3;
         if (database != null && (!message.getText().toString().isEmpty() || isMedia)) {
             MessageSend mss = new MessageSend();
 
+            mss.setIsAdmin(isAdminSender ? "true" : "false");
             mss.setHora(ServerValue.TIMESTAMP);
 if(!isMedia) {
     String men = message.getText().toString();

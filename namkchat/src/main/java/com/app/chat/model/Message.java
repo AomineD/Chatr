@@ -53,6 +53,16 @@ public class Message {
 
     private String type_mensaje;
 
+    public String getIsAdmin() {
+        return isAdmin;
+    }
+
+    public void setIsAdmin(String isAdmin) {
+        this.isAdmin = isAdmin;
+    }
+
+    private String isAdmin = "false";
+
     public String getUrl_img_media() {
         return url_img_media;
     }

@@ -12,6 +12,9 @@
 
     <color name="tran">#00000000</color>
 
+    <color name="yellow">#ffeb3b</color>
+
+    <color name="admin_texts">#4a148c</color>
     <color name="colorHeaderText">#000000</color>
     <color name="colorHeader" >#ffffff</color>
 </resources>
