@@ -31,7 +31,12 @@ public class MainActivity extends AppCompatActivity {
 
 
         fr.setLang_chat("Español \uD83C\uDDEA\uD83C\uDDF8");
-        fr.setNameP("kong");
+        fr.setNameP("kong", new NamkoFragment.onBanUser() {
+            @Override
+            public void whenBanUser(String username) {
+
+            }
+        });
         // fr.setDebg(true);
         fr.setIdentifier("kee20165586");
         //
