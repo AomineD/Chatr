@@ -31,10 +31,11 @@ public class MainActivity extends AppCompatActivity {
 
 
         fr.setLang_chat("Español \uD83C\uDDEA\uD83C\uDDF8");
-        fr.setNameP("Diego");
+        fr.setNameP("kong");
         // fr.setDebg(true);
-        fr.setIdentifier("kee2012406");
-        fr.isAdminSender = true;
+        fr.setIdentifier("kee20165586");
+        //
+        fr.isAdminSender = false;
 
         fragmentManager.beginTransaction().replace(R.id.frg, fr).commitAllowingStateLoss();
 

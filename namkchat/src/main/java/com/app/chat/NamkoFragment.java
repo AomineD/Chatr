@@ -1,11 +1,14 @@
 package com.app.chat;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,6 +25,7 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
 import com.app.chat.adapter.MessageAdapter;
+import com.app.chat.model.BanModel;
 import com.app.chat.model.Message;
 import com.app.chat.model.MessageReceive;
 import com.app.chat.model.MessageSend;
@@ -127,9 +131,10 @@ public void setMaxMessage(int max){
 
         database = FirebaseDatabase.getInstance();
         databaseReference = database.getReference(lang_chat);
+        referenceBan = database.getReference("bans");
 
         if(adapter == null){
-            adapter = new MessageAdapter(getActivity(), messageArrayList);
+            adapter = new MessageAdapter(getActivity(), messageArrayList, isAdminSender);
         }
         SetupRef();
 
@@ -206,6 +211,8 @@ public void setMaxMessage(int max){
 return mensDef;
     }
 
+
+    private DatabaseReference referenceBan;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -226,8 +233,9 @@ return mensDef;
 
     }
 
-    public void setNameP(String n){
+    public void setNameP(String n, onBanUser onBanUser){
         this.nameF = n;
+        this.OnBanUserList = onBanUser;
     }
 
 
@@ -255,7 +263,37 @@ lang_c = v.findViewById(R.id.channel);
 
         if(isDebug)
         Log.e("MAIN", "onCreateView: CHAT => "+lang_chat+" BASE DE DATOS => "+databaseReference.getRef().toString());
-        adapter = new MessageAdapter(getContext(), messageArrayList);
+        adapter = new MessageAdapter(getContext(), messageArrayList, isAdminSender);
+
+        adapter.setOnClickMessage(new MessageAdapter.onClickListener() {
+            @Override
+            public void clickingMessage(final String name) {
+                final BanModel model = new BanModel();
+
+                model.name = name;
+              //  Toast.makeText(getContext(), "si "+name, Toast.LENGTH_SHORT).show();
+
+                final AlertDialog alertDialog = new AlertDialog.Builder(getContext()).setTitle("Banear usuario").setMessage("¿Seguro que quieres banear a "+name+" del chat/sorteos?").setCancelable(false).create();
+
+                alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancelar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        alertDialog.dismiss();
+                    }
+                });
+
+                alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Si, banear", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        referenceBan.push().setValue(model);
+                        Toast.makeText(getContext(), "Baneado con éxito", Toast.LENGTH_SHORT).show();
+                        OnBanUserList.whenBanUser(name);
+                    }
+                });
+
+                alertDialog.show();
+            }
+        });
 
 
         LinearLayoutManager ll = new LinearLayoutManager(getContext());
@@ -308,6 +346,7 @@ if(getContext() != null && withAds) {
     d.addView(ad);
 }
 
+
         return v;
     }
 
@@ -338,6 +377,10 @@ if(getContext() != null && withAds) {
 
 
 
+    private onBanUser OnBanUserList;
+    public interface onBanUser{
+        void whenBanUser(String username);
+    }
     ImageView bk;
 
     private void SetupBackground() {
@@ -446,7 +489,8 @@ public static final int mansi = 3;
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
+                if(adapter != null)
+adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -461,13 +505,48 @@ public static final int mansi = 3;
         });
 
 
+referenceBan.addChildEventListener(new ChildEventListener() {
+    @Override
+    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+        BanModel model = dataSnapshot.getValue(BanModel.class);
 
+        if(model != null){
+            nameBanneds.add(model.name);
+        }
+
+    }
+
+    @Override
+    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+    }
+
+    @Override
+    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+    }
+
+    @Override
+    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+    }
+
+    @Override
+    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+    }
+});
 
     }
 
 
+    private ArrayList<String> nameBanneds = new ArrayList<>();
     private void SendMessage(boolean isMedia) {
         if (database != null && (!message.getText().toString().isEmpty() || isMedia)) {
+            if(nameBanneds.contains(nameF)){
+                Toast.makeText(getContext(), "Has sido baneado por algun admin", Toast.LENGTH_SHORT).show();
+                return;
+            }
             MessageSend mss = new MessageSend();
 
             mss.setIsAdmin(isAdminSender ? "true" : "false");

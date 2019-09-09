@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.app.chat.NamkoFragment;
 import com.app.chat.R;
 import com.app.chat.model.MessageReceive;
+import com.facebook.ads.Ad;
 import com.facebook.ads.AdSize;
 import com.facebook.ads.AdView;
 import com.squareup.picasso.Picasso;
@@ -83,6 +84,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         this.idMain = idMain;
     }
 
+    public interface onClickListener{
+        void clickingMessage(String name);
+    }
+
     private int another_cards;
     private String idMain;
 
@@ -92,12 +97,19 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     private NamkoFragment.OnClickmedia clickmedia;
 
-    public MessageAdapter(Context ss, ArrayList<MessageReceive> messages){
+    public MessageAdapter(Context ss, ArrayList<MessageReceive> messages, boolean Admin){
       this.mContext = ss;
       this.messageOf = messages;
+      this.isAdminUser = Admin;
     }
 
 
+    public void setOnClickMessage(onClickListener onClickMessage){
+        this.listener = onClickMessage;
+    }
+
+    private onClickListener listener;
+    private boolean isAdminUser = false;
     @NonNull
     @Override
     public MessageViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -111,6 +123,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     public void onBindViewHolder(@NonNull MessageViewHolder messageViewHolder, final int i) {
 messageViewHolder.img_admin.setVisibility(View.GONE);
 
+
+
+
         if(messageOf.get(i).isAd && messageOf.get(i).getIsAdmin().equals("false")){
             if(!messageViewHolder.isAdLoaded) {
                 messageViewHolder.adView2 = new AdView(mContext, id_intersticial, AdSize.BANNER_HEIGHT_50);
@@ -121,6 +136,23 @@ messageViewHolder.isAdLoaded = true;
             messageViewHolder.adView.setVisibility(View.VISIBLE);
             messageViewHolder.base.setVisibility(View.GONE);
         }else if(messageOf.get(i).getIsAdmin().equals("false")){
+final MessageReceive mf = messageOf.get(i);
+            if(isAdminUser) {
+             //   Log.e(TAG, "onBindViewHolder: si es admin");
+                messageViewHolder.name.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+listener.clickingMessage(mf.getName_of());
+                    }
+                });
+            }else{
+                messageViewHolder.name.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+            }
 
             messageViewHolder.adView.setVisibility(View.GONE);
             messageViewHolder.base.setVisibility(View.VISIBLE);
