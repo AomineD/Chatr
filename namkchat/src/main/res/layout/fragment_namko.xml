@@ -71,6 +71,8 @@
     android:layout_width="match_parent"
     android:id="@+id/containads"
     android:layout_height="wrap_content"
+    android:background="@drawable/border_strok"
+    android:padding="2dp"
     android:orientation="vertical">
 
 </LinearLayout>
