@@ -23,7 +23,5 @@
     <string name="m3u_empty">Report this chapter or channel to our technical support team, to review it with the report button displayed</string>
     <string name="out_memory">Your cell phone has little available memory :(</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

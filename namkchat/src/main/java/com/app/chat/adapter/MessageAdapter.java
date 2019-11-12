@@ -134,6 +134,7 @@ messageViewHolder.img_admin.setVisibility(View.GONE);
 messageViewHolder.isAdLoaded = true;
             }
             messageViewHolder.adView.setVisibility(View.VISIBLE);
+            messageViewHolder.adve.setVisibility(View.VISIBLE);
             messageViewHolder.base.setVisibility(View.GONE);
         }else if(messageOf.get(i).getIsAdmin().equals("false")){
 final MessageReceive mf = messageOf.get(i);
@@ -155,6 +156,7 @@ listener.clickingMessage(mf.getName_of());
             }
 
             messageViewHolder.adView.setVisibility(View.GONE);
+            messageViewHolder.adve.setVisibility(View.GONE);
             messageViewHolder.base.setVisibility(View.VISIBLE);
 
             messageViewHolder.name.setText(messageOf.get(i).getName_of());
@@ -249,6 +251,7 @@ listener.clickingMessage(mf.getName_of());
 
         messageViewHolder.img_admin.setVisibility(View.VISIBLE);
         messageViewHolder.adView.setVisibility(View.GONE);
+        messageViewHolder.adve.setVisibility(View.GONE);
         messageViewHolder.base.setVisibility(View.VISIBLE);
 
         messageViewHolder.name.setText(messageReceive.getName_of());
@@ -388,6 +391,7 @@ listener.clickingMessage(mf.getName_of());
         private AdView adView2;
         private View base;
         private ImageView img_admin;
+        private View adve;
 
         public MessageViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -399,6 +403,7 @@ listener.clickingMessage(mf.getName_of());
             mesn = itemView.findViewById(R.id.t_messg);
             backing = itemView.findViewById(R.id.bacj);
 adView = itemView.findViewById(R.id.layad);
+adve = itemView.findViewById(R.id.adlay);
             actionbtn = itemView.findViewById(R.id.actionmedia);
             card_back = itemView.findViewById(R.id.card_back);
             mediaPhoto = itemView.findViewById(R.id.media_f);
