@@ -23,5 +23,12 @@
     <string name="m3u_empty">Report this chapter or channel to our technical support team, to review it with the report button displayed</string>
     <string name="out_memory">Your cell phone has little available memory :(</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_change">Change channel</string>
+    <string name="dontwant">Cancel</string>
+    <string name="confirm">Yes, i want</string>
+    <string name="doyouwant">Do you want chat with this person</string>
+
 
 </resources>

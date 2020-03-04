@@ -7,7 +7,7 @@
     xmlns:ads="http://schemas.android.com/apk/res-auto"
     tools:context=".ViewListActivity">
 
-<android.support.v7.widget.Toolbar
+<androidx.appcompat.widget.Toolbar
     android:layout_width="match_parent"
     android:layout_height="50dp"
     android:id="@+id/toolbar"
@@ -17,7 +17,7 @@
 
 
 
-</android.support.v7.widget.Toolbar>
+</androidx.appcompat.widget.Toolbar>
 
     <ImageView
         android:layout_width="30dp"
@@ -51,7 +51,7 @@
         />
 
 
-    <android.support.v4.widget.SwipeRefreshLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/refresh_ly"
@@ -59,14 +59,14 @@
 
         >  <!--android:layout_above="@id/banner_container"-->
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
 
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/list_m3u"
         />
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
 <RelativeLayout

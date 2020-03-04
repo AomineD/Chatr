@@ -1,32 +1,37 @@
 package com.app.chat;
 
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.app.chat.model.ChanInfo;
+import com.dagf.admobnativeloader.EasyFAN;
+import com.facebook.ads.AdSettings;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.animation.Animation;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.widget.Toast;
 
 import com.app.chat.adapter.MessageAdapter;
 import com.app.chat.model.BanModel;
-import com.app.chat.model.Message;
 import com.app.chat.model.MessageReceive;
 import com.app.chat.model.MessageSend;
 import com.facebook.ads.AdSize;
@@ -37,7 +42,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
-import com.labo.kaji.fragmentanimations.PushPullAnimation;
+import com.google.firebase.database.core.view.Change;
 import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
@@ -47,6 +52,9 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import hani.momanii.supernova_emoji_library.Actions.EmojIconActions;
+import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText;
+import hani.momanii.supernova_emoji_library.emoji.Emojicon;
 
 
 /**
@@ -54,13 +62,102 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class NamkoFragment extends Fragment {
 
-    public void setWithAds(boolean withAds, String adbanner) {
+    public void setWithAds(boolean withAds, boolean isnv, String adbanner) {
         this.withAds = withAds;
         this.id_banner = adbanner;
+        this.isNativeAd = isnv;
     }
 
+
+    private boolean isNativeAd;
     private boolean withAds;
     private String id_banner;
+
+    private DatabaseReference referenceChats;
+    private DatabaseReference chatUnic;
+    private void checkMyPrivateChats(){
+
+        referenceChats.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                String thiskey = dataSnapshot.getKey();
+                String[] parts = dataSnapshot.getKey().split("-chat-");
+                for(int i=0; i < parts.length; i++){
+
+                    if(parts[i].equals(getIdentifier())){
+                        chatUnic = dataSnapshot.getRef();
+                        configData();
+                    }
+                }
+
+
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    private void configData() {
+        chatUnic.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                if(dataSnapshot.hasChild("channelName")){
+                  ChanInfo  chanInfo = dataSnapshot.getValue(ChanInfo.class);
+                    ChangeFragment.processNewChan(chanInfo);
+                }
+
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void setId_native_banner(ArrayList<String> id_native_banner) {
+        this.id_native_banner = id_native_banner;
+        sizeIds = id_native_banner.size();
+    }
+
+    private ArrayList<String> id_native_banner = new ArrayList<>();
+    public static int sizeIds = 0;
+
     private long diasMax = 5;
     private int saizMax = 1000;
 
@@ -95,9 +192,18 @@ public void setMaxMessage(int max){
     }
 
     private String identifier;
+    public int ContainerId;
 
-    public void setIdentifier(String j){
+    public String getIdentifier(){
+        return identifier;
+    }
+    public String getNamef(){
+        return nameF;
+    }
+
+    public void setIdentifier(String j, int container_id){
         identifier = j;
+    this.ContainerId = container_id;
     }
 
     public interface OnClickingSend{
@@ -120,6 +226,7 @@ public void setMaxMessage(int max){
 
     private String nameF = "NO NAME";
 
+
     public void setLang_chat(String lang_chat) {
         this.lang_chat = lang_chat;
 
@@ -130,16 +237,25 @@ public void setMaxMessage(int max){
         }
 
         database = FirebaseDatabase.getInstance();
+        referenceChats = database.getReference();
         databaseReference = database.getReference(lang_chat);
+
+        checkMyPrivateChats();
+
         referenceBan = database.getReference("bans");
 
         if(adapter == null){
             adapter = new MessageAdapter(getActivity(), messageArrayList, isAdminSender);
         }
+
+        adapter.isNativeAd = isNativeAd;
+
         SetupRef();
 
-        if(lang_c != null){
+        if(lang_c != null && chanInfo == null){
             lang_c.setText(lang_chat);
+        }else if(lang_c != null){
+            lang_c.setText(chanInfo.channelName);
         }
     }
 
@@ -248,22 +364,53 @@ return mensDef;
         View v = inflater.inflate(R.layout.fragment_namko, container, false);
 
 
+        v.findViewById(R.id.change_channel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(getFragmentManager() != null && getFragmentManager().getFragments().size() < 2) {
+                    ChangeFragment changeFragment = new ChangeFragment();
+
+                    changeFragment.selectedChannel = lang_chat;
+                    changeFragment.setNamkoFragment(NamkoFragment.this);
+
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+
+                    transaction.add(ContainerId, changeFragment).addToBackStack(null).commitAllowingStateLoss();
+                }
+            }
+        });
+
 lang_c = v.findViewById(R.id.channel);
                 list_mesg = v.findViewById(R.id.rec_chat);
         message = v.findViewById(R.id.message_edt);
         profile_name = v.findViewById(R.id.profile_nam);
         profile_pic = v.findViewById(R.id.image_prf);
+        openEmoji = v.findViewById(R.id.emoji_btn);
+
+        final EmojIconActions emojicon = new EmojIconActions(getActivity(), v, message, openEmoji);
+
+        emojicon.setUseSystemEmoji(false);
+
+      //
+
+
+        emojicon.ShowEmojIcon();
 
         profile_name.setText(nameF);
         Picasso.get().load(Uri.parse(urrPhoto)).placeholder(R.drawable.ic_avatar_default).fit().into(profile_pic);
 
         send_msg = v.findViewById(R.id.send_btn);
 
-
+//        AdSettings.setDebugBuild(true);
 
         if(isDebug)
         Log.e("MAIN", "onCreateView: CHAT => "+lang_chat+" BASE DE DATOS => "+databaseReference.getRef().toString());
-        adapter = new MessageAdapter(getContext(), messageArrayList, isAdminSender);
+        adapter = new MessageAdapter(getActivity(), messageArrayList, isAdminSender);
+
+        adapter.setFragmentInfo(this,getFragmentManager());
+
+        adapter.isNativeAd = isNativeAd;
 
         adapter.setOnClickMessage(new MessageAdapter.onClickListener() {
             @Override
@@ -326,7 +473,11 @@ lang_c = v.findViewById(R.id.channel);
 
         SetupBackground();
 
-        lang_c.setText(lang_chat);
+        if(lang_c != null && chanInfo == null){
+            lang_c.setText(lang_chat);
+        }else if(lang_c != null){
+            lang_c.setText(chanInfo.channelName);
+        }
 
 getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
@@ -344,11 +495,37 @@ if(getContext() != null && withAds) {
     ad.loadAd();
 
     d.addView(ad);
+
+
+    //Log.e("MAIN", "onCreateView: "+id_native_banner.size() );
+    if(id_native_banner != null && id_native_banner.size() > 0) {
+       // AdSettings.setDebugBuild(true);
+        fanfic = new EasyFAN(getActivity(), id_native_banner);
+
+        fanfic.setInterface(new EasyFAN.OnNativeLoadInterface() {
+            @Override
+            public void OnSuccess() {
+                Log.e("MAIN", "OnSuccess: cargado" );
+            }
+
+            @Override
+            public void OnFail(String ss) {
+                Log.e("MAIN", "OnFail: "+ss );
+            }
+        });
+
+        fanfic.loadBannerAds();
+
+
+    }
+
 }
 
 
         return v;
     }
+
+    public static EasyFAN fanfic;
 
     private boolean colorAssigned;
     private void SetupadapteR() {
@@ -393,7 +570,8 @@ if(getContext() != null && withAds) {
 
 
     private RecyclerView list_mesg;
-    private EditText message;
+    private EmojiconEditText message;
+    private ImageView openEmoji;
     private CircleImageView profile_pic;
     private TextView profile_name;
     private FloatingActionButton send_msg;
@@ -419,65 +597,74 @@ public static final int mansi = 3;
         databaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                MessageReceive m = dataSnapshot.getValue(MessageReceive.class);
+                if(!dataSnapshot.hasChild("channelName")) {
+                    MessageReceive m = dataSnapshot.getValue(MessageReceive.class);
 
 
-                if (m != null && isRudness(m.getMesg())) {
+                    if (m != null && isRudness(m.getMesg())) {
 
-                   m.setMesg(transform(m.getMesg()));
+                        m.setMesg(transform(m.getMesg()));
 
-                }
-
-
-                if(m == null){
-                    return;
-                }else {
-                    if(getTimeInInteger(m.getHora())){
-                        dataSnapshot.getRef().removeValue();
                     }
-                }
 
 
-
-                if(dataSnapshot.getKey().equals(keyactual)){
-                    return;
-                }
-
-                keyactual = dataSnapshot.getKey();
-
-
-                if(isDebug){
-                    Log.e("MAIN", "onChildAdded: m es null = "+dataSnapshot.getKey()+(" mensaje  = ") + (m!=null ? m.getMesg(): "ES NULL PAPA"));
-                }
-
-
-                if(withAds) {
-                    if (fr >= mansi) {
-                        MessageReceive mw = new MessageReceive();
-                        mw.isAd = true;
-                        adapter.addMessage(mw);
-                        fr = 0;
+                    if (m == null) {
+                        return;
                     } else {
-                        fr++;
+                        if (getTimeInInteger(m.getHora())) {
+                            dataSnapshot.getRef().removeValue();
+                        }
+                    }
+
+
+                    if (dataSnapshot.getKey().equals(keyactual)) {
+                        return;
+                    }
+
+                    keyactual = dataSnapshot.getKey();
+
+
+                    if (isDebug) {
+                        Log.e("MAIN", "onChildAdded: m es null = " + dataSnapshot.getKey() + (" mensaje  = ") + (m != null ? m.getMesg() : "ES NULL PAPA"));
+                    }
+
+
+                    if (withAds) {
+                        if (fr >= mansi) {
+                            MessageReceive mw = new MessageReceive();
+                            mw.isAd = true;
+                            adapter.addMessage(mw);
+                            fr = 0;
+                        } else {
+                            fr++;
+                        }
+                    }
+
+
+                    if (!getTimeInInteger(m.getHora()) && adapter != null) {
+                        adapter.addMessage(m);
+                    } else if (adapter == null) {
+                        messageArrayList.add(m);
+                    }
+
+                    if (messageArrayList.size() >= saizMax) {
+                        if (isLongTo(m.getHora(), 1)) {
+                            dataSnapshot.getRef().removeValue();
+                        }
+                    }
+
+                    // Log.e("MAIN", "onChildAdded: "+messageArrayList.size());
+
+                }else{
+
+                   ChanInfo chanInfo = dataSnapshot.getValue(ChanInfo.class);
+                    ChangeFragment.processNewChan(chanInfo);
+                    if(chanInfo != null && chanInfo.identifierChannel.equals(lang_chat) && chanInfo != NamkoFragment.chanInfo){
+
+                        NamkoFragment.chanInfo = chanInfo;
+
                     }
                 }
-
-
-
-                if(!getTimeInInteger(m.getHora()) && adapter != null) {
-                    Log.e("MAIN", "onChildAdded: "+adapter.getItemCount());
-                    adapter.addMessage(m);
-                }else if(adapter == null){
-                    Log.e("MAIN", "onChildAdded: 0pp" );
-                    messageArrayList.add(m);
-                }
-
-                if(messageArrayList.size() >= saizMax){
-                    if(isLongTo(m.getHora(), 1)){
-                        dataSnapshot.getRef().removeValue();
-                    }
-                }
-   // Log.e("MAIN", "onChildAdded: "+messageArrayList.size());
 
 
             }
@@ -539,6 +726,8 @@ referenceBan.addChildEventListener(new ChildEventListener() {
 
     }
 
+    public static ChanInfo chanInfo;
+
 
     private ArrayList<String> nameBanneds = new ArrayList<>();
     private void SendMessage(boolean isMedia) {
@@ -570,6 +759,16 @@ if(isRudness(men)){
     mss.setType_mensaje("1");
 }
 mss.setSnap(identifier);
+if(messageArrayList.size() < 1 && chanInfo == null){
+    chanInfo = new ChanInfo();
+    chanInfo.channelName = lang_chat;
+    chanInfo.identifierChannel = lang_chat;
+    databaseReference.push().setValue(chanInfo);
+    ChangeFragment.processNewChan(chanInfo);
+}else if(messageArrayList.size() < 1){
+    databaseReference.push().setValue(chanInfo);
+   ChangeFragment.processNewChan(chanInfo);
+}
             mss.setName_of(nameF);
             mss.setUrlProfilePic(urrPhoto);
             message.setText("");

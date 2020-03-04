@@ -2,6 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:emojicon="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.app.chat.NamkoFragment">
@@ -20,7 +21,7 @@
         android:paddingEnd="5dp"
         android:paddingStart="5dp"
         tools:context=".MainActivity">
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardBackgroundColor="@color/colorHeader"
@@ -63,9 +64,19 @@
                     android:textAlignment="textEnd"
                     android:textColor="@color/colorHeaderText"
                     android:textSize="18sp" />
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:id="@+id/change_channel"
+                    android:layout_margin="8dp"
+                    app:srcCompat="@drawable/menu"
+                    android:layout_gravity="center_vertical"
+                    />
+
             </LinearLayout>
 
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
 <LinearLayout
     android:layout_width="match_parent"
@@ -76,14 +87,14 @@
     android:orientation="vertical">
 
 </LinearLayout>
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:id="@+id/rec_chat"
             >
 
-        </android.support.v7.widget.RecyclerView>
+        </androidx.recyclerview.widget.RecyclerView>
 
 
 
@@ -94,7 +105,8 @@
             android:orientation="horizontal"
             >
 
-            <android.support.v7.widget.CardView
+
+            <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -103,20 +115,37 @@
                 android:layout_marginEnd="5dp"
                 app:cardElevation="0dp"
                 >
-            <EditText
-                android:id="@+id/message_edt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-android:layout_marginEnd="5dp"
-                android:layout_marginStart="5dp"
 
-                android:fontFamily="@font/roboto"
-                android:hint="@string/hint_def"
-                android:textColor="@color/colorHeaderText"
-                android:textColorHint="@color/colorHeaderText" />
-            </android.support.v7.widget.CardView>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:id="@+id/emoji_btn"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="center_vertical"
+                        app:srcCompat="@drawable/emoji" />
 
-            <android.support.design.widget.FloatingActionButton
+                    <hani.momanii.supernova_emoji_library.Helper.EmojiconEditText
+                        android:id="@+id/message_edt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginStart="5dp"
+
+                        android:fontFamily="@font/roboto"
+                        android:hint="@string/hint_def"
+                        android:textColor="@color/colorHeaderText"
+                        android:textColorHint="@color/colorHeaderText"
+                        emojicon:emojiconSize="28sp" />
+
+                </LinearLayout>
+
+
+            </androidx.cardview.widget.CardView>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/send_btn"
                 android:layout_width="44dp"
                 android:layout_height="44dp"
