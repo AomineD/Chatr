@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.app.chat.model.ChanInfo;
+import com.app.chat.utils.Utils;
 import com.dagf.admobnativeloader.EasyFAN;
 import com.facebook.ads.AdSettings;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -381,12 +382,17 @@ return mensDef;
             }
         });
 
+
+
 lang_c = v.findViewById(R.id.channel);
                 list_mesg = v.findViewById(R.id.rec_chat);
         message = v.findViewById(R.id.message_edt);
         profile_name = v.findViewById(R.id.profile_nam);
         profile_pic = v.findViewById(R.id.image_prf);
         openEmoji = v.findViewById(R.id.emoji_btn);
+
+        if(getActivity()!=null)
+        Utils.showCase(getActivity(), openEmoji, v.findViewById(R.id.change_channel));
 
         final EmojIconActions emojicon = new EmojIconActions(getActivity(), v, message, openEmoji);
 

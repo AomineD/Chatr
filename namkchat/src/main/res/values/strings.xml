@@ -29,6 +29,9 @@
     <string name="dontwant">Cancel</string>
     <string name="confirm">Yes, i want</string>
     <string name="doyouwant">Do you want chat with this person</string>
+    <string name="got_it">Got it</string>
+    <string name="emoji_info">New emoji button :)</string>
+    <string name="change_info">New change channel button to navigate anothers chats</string>
 
 
 </resources>

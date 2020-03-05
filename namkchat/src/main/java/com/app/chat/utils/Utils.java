@@ -2,6 +2,7 @@ package com.app.chat.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -20,6 +21,8 @@ import me.samlss.timomenu.animation.ScaleItemAnimation;
 import me.samlss.timomenu.interfaces.OnTimoItemClickListener;
 import me.samlss.timomenu.interfaces.TimoMenuListener;
 import me.samlss.timomenu.view.TimoItemView;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
+import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
 public class Utils {
     private static List<TimoItemViewParameter> getCenterChatNoise(int itemWidth){
@@ -107,4 +110,35 @@ listener.onConfirm();
     }
 
     private static TimoMenu timoMenu;
+
+
+    private static final String key_show = "NASDASD";
+    public static void showCase(Activity m, View emojibtn, View changeBtn){
+       SharedPreferences preferences = m.getSharedPreferences("case", Context.MODE_PRIVATE);
+
+        if(preferences.getInt(key_show, 0) == 0){
+
+         //   preferences.edit().
+
+
+
+            ShowcaseConfig config = new ShowcaseConfig();
+            config.setDelay(500); // half second between each showcase view
+
+            MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(m, "idasdes");
+
+            sequence.setConfig(config);
+
+            sequence.addSequenceItem(changeBtn,
+          m.getString(R.string.change_info), m.getString(R.string.got_it));
+
+            sequence.addSequenceItem(emojibtn,
+                    m.getString(R.string.emoji_info), m.getString(R.string.got_it));
+
+            sequence.start();
+
+                    }
+
+    }
+
 }

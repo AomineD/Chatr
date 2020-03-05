@@ -23,4 +23,14 @@
 
     <string name="m3u_empty">Reporta a nuestro equipo de soporte tecnico este capitulo o canal, para revisarlo con el boton de reportar mostrado</string>
     <string name="out_memory">Tu celular tiene poca memoria disponible :(</string>
+
+
+    <string name="title_change">Cambiar de chat</string>
+    <string name="dontwant">Cancelar</string>
+    <string name="confirm">Si</string>
+    <string name="doyouwant">¿Quieres chatear con esta persona?</string>
+
+    <string name="got_it">Ok!</string>
+    <string name="emoji_info">Nuevo boton de emojis :)</string>
+    <string name="change_info">Ahora puedes cambiar entre otros chats</string>
 </resources>
