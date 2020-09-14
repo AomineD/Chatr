@@ -34,6 +34,7 @@ public class UserActivity extends AppCompatActivity {
                     namkoFragment.setNameP(usn, namkoFragment.OnBanUserList, namkoFragment.clickBackListener);
                     isReady = true;
                onBackPressed();
+               namkoFragment.shownow();
                 namkoFragment = null;
                 }
             }

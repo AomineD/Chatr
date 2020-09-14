@@ -34,6 +34,11 @@ public class MainActivity extends AppCompatActivity {
             public void whenBanUser(String username) {
 
             }
+        }, new NamkoFragment.onClickBackListener() {
+            @Override
+            public void onClicked() {
+
+            }
         });
        /* fr.setWithAds(true, true, "");
         ArrayList<String> idsnativ = new ArrayList<>();

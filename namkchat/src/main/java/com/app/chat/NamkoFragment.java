@@ -389,6 +389,11 @@ startActivity(new Intent(getContext(), UserActivity.class));
         void onClicked();
     }
     public onClickBackListener clickBackListener;
+    public void shownow(){
+        if(getActivity() != null)
+        Utils.showCase(getActivity(), openEmoji, vs.findViewById(R.id.change_channel));
+    }
+    private View vs;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -396,7 +401,7 @@ startActivity(new Intent(getContext(), UserActivity.class));
 
         View v = inflater.inflate(R.layout.fragment_namko, container, false);
 
-
+vs = v;
         v.findViewById(R.id.change_channel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -431,9 +436,11 @@ lang_c = v.findViewById(R.id.channel);
             }
         });
 
-        if(getActivity()!=null)
+        if(getActivity()!=null && !isAutoUser)
         Utils.showCase(getActivity(), openEmoji, v.findViewById(R.id.change_channel));
-
+else if(getActivity() != null && isAutoUser && Utils.isUserSaved()){
+            Utils.showCase(getActivity(), openEmoji, v.findViewById(R.id.change_channel));
+        }
         final EmojIconActions emojicon = new EmojIconActions(getActivity(), v, message, openEmoji);
 
         emojicon.setUseSystemEmoji(false);
