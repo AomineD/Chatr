@@ -375,15 +375,20 @@ startActivity(new Intent(getContext(), UserActivity.class));
 
     }
 
-    public void setNameP(String n, onBanUser onBanUser){
+    public void setNameP(String n, onBanUser onBanUser, onClickBackListener olikc) {
         this.nameF = n;
-        if(profile_name != null)
-        profile_name.setText(nameF);
+        if (profile_name != null)
+            profile_name.setText(nameF);
         this.OnBanUserList = onBanUser;
+    this.clickBackListener = olikc;
     }
 
 
     public boolean isAdminSender = false;
+    public interface onClickBackListener{
+        void onClicked();
+    }
+    public onClickBackListener clickBackListener;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -417,6 +422,14 @@ lang_c = v.findViewById(R.id.channel);
         profile_name = v.findViewById(R.id.profile_nam);
         profile_pic = v.findViewById(R.id.image_prf);
         openEmoji = v.findViewById(R.id.emoji_btn);
+        back_btn = v.findViewById(R.id.back_btn);
+        back_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(clickBackListener != null)
+             clickBackListener.onClicked();
+            }
+        });
 
         if(getActivity()!=null)
         Utils.showCase(getActivity(), openEmoji, v.findViewById(R.id.change_channel));
@@ -607,6 +620,7 @@ if(getContext() != null && withAds) {
     private ImageView openEmoji;
     private CircleImageView profile_pic;
     private TextView profile_name;
+    public ImageView back_btn;
     private FloatingActionButton send_msg;
     private MessageAdapter adapter;
 

@@ -13,6 +13,7 @@ import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 public class UserActivity extends AppCompatActivity {
 
     public static NamkoFragment namkoFragment;
+    private boolean isReady = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,7 +31,8 @@ public class UserActivity extends AppCompatActivity {
                     String idf = Utils.createUserIdentifier(usn);
                     Utils.saveData(idf, usn);
                     namkoFragment.identifier = idf;
-                    namkoFragment.setNameP(usn, namkoFragment.OnBanUserList);
+                    namkoFragment.setNameP(usn, namkoFragment.OnBanUserList, namkoFragment.clickBackListener);
+                    isReady = true;
                onBackPressed();
                 namkoFragment = null;
                 }
@@ -42,6 +44,9 @@ public class UserActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        if(!isReady){
+            namkoFragment.clickBackListener.onClicked();
+        }
         Animatoo.animateSlideUp(this);
     }
 }
