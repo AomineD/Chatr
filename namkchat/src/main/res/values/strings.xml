@@ -32,6 +32,9 @@
     <string name="got_it">Got it</string>
     <string name="emoji_info">New emoji button :)</string>
     <string name="change_info">New change channel button to navigate anothers chats</string>
+    <string name="chat_info">Ahora puedes compartir con nuestra comunidad tus ideas, peliculas y series favoritas, recuerda respetar a todos nos hace una mejor comunidad</string>
+    <string name="username">Nombre de usuario</string>
+    <string name="go_home">Unirse</string>
 
 
 </resources>

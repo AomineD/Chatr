@@ -14,6 +14,8 @@ import com.app.chat.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import me.samlss.timomenu.TimoItemViewParameter;
 import me.samlss.timomenu.TimoMenu;
@@ -141,4 +143,49 @@ listener.onConfirm();
 
     }
 
+    public static String createUserIdentifier(String nm){
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            int randomNum = ThreadLocalRandom.current().nextInt(0, 8000 + 1);
+            nm = nm+""+randomNum;
+        }else{
+            Random rand = new Random();
+
+            // nextInt is normally exclusive of the top value,
+            // so add 1 to make it inclusive
+            int randomNum = rand.nextInt((8000 - 0) + 1) + 0;
+            nm = nm+""+randomNum;
+        }
+
+    return nm;
+    }
+
+    public static void setPreferences(SharedPreferences preferences) {
+        Utils.preferences = preferences;
+    }
+
+    private static SharedPreferences preferences;
+private static String key_usern = "KALALSLAKAKA";
+private static String key_identifier = "LLWKQKASAS";
+private static String key_saved = "KASKASKSAK";
+
+
+    public static void saveData(String identifier, String user_name){
+
+preferences.edit().putString(key_usern, user_name).apply();
+        preferences.edit().putString(key_identifier, identifier).apply();
+preferences.edit().putBoolean(key_saved, true).apply();
+    }
+
+    public static String[] getDataUser(){
+        String[] s = new String[2];
+
+        s[0] = preferences.getString(key_usern, "");
+        s[1] = preferences.getString(key_identifier, "");
+
+        return s;
+    }
+    
+    public static boolean isUserSaved(){
+        return preferences.getBoolean(key_saved, false);
+    }
 }

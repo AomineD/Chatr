@@ -3,7 +3,10 @@ package com.app.chat;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -11,6 +14,7 @@ import androidx.annotation.Nullable;
 
 import com.app.chat.model.ChanInfo;
 import com.app.chat.utils.Utils;
+import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.dagf.admobnativeloader.EasyFAN;
 import com.facebook.ads.AdSettings;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -56,12 +60,15 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import hani.momanii.supernova_emoji_library.Actions.EmojIconActions;
 import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText;
 import hani.momanii.supernova_emoji_library.emoji.Emojicon;
+import okhttp3.internal.Util;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class NamkoFragment extends Fragment {
+
+    private boolean isAutoUser;
 
     public void setWithAds(boolean withAds, boolean isnv, String adbanner) {
         this.withAds = withAds;
@@ -192,7 +199,7 @@ public void setMaxMessage(int max){
 
     }
 
-    private String identifier;
+    public String identifier;
     public int ContainerId;
 
     public String getIdentifier(){
@@ -207,6 +214,10 @@ public void setMaxMessage(int max){
     this.ContainerId = container_id;
     }
 
+    public void setIdentifier(boolean ist, int container_id){
+        isAutoUser = ist;
+        this.ContainerId = container_id;
+    }
     public interface OnClickingSend{
         void OnSend();
     }
@@ -347,11 +358,27 @@ return mensDef;
                 Log.e("MAIN", "Failed: "+erno);
             }
         });
+        if(getContext() != null && isAutoUser) {
+            SharedPreferences preferences = getContext().getSharedPreferences("user_chat", Context.MODE_PRIVATE);
+            Utils.setPreferences(preferences);
+            if(Utils.isUserSaved()){
+                String id = Utils.getDataUser()[1];
+                String usern = Utils.getDataUser()[0];
+                nameF = usern;
+                identifier = id;
+            }else{
+UserActivity.namkoFragment = this;
+startActivity(new Intent(getContext(), UserActivity.class));
+                Animatoo.animateZoom(getContext());
+            }
+        }
 
     }
 
     public void setNameP(String n, onBanUser onBanUser){
         this.nameF = n;
+        if(profile_name != null)
+        profile_name.setText(nameF);
         this.OnBanUserList = onBanUser;
     }
 
@@ -510,12 +537,12 @@ if(getContext() != null && withAds) {
 
         fanfic.setInterface(new EasyFAN.OnNativeLoadInterface() {
             @Override
-            public void OnSuccess() {
+            public void OnSuccess(int pos) {
                 Log.e("MAIN", "OnSuccess: cargado" );
             }
 
             @Override
-            public void OnFail(String ss) {
+            public void OnFail(String ss, int pos) {
                 Log.e("MAIN", "OnFail: "+ss );
             }
         });
@@ -560,7 +587,7 @@ if(getContext() != null && withAds) {
 
 
 
-    private onBanUser OnBanUserList;
+    public onBanUser OnBanUserList;
     public interface onBanUser{
         void whenBanUser(String username);
     }

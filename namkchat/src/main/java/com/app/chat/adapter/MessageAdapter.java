@@ -25,6 +25,8 @@ import com.app.chat.model.ChanInfo;
 import com.app.chat.model.MessageReceive;
 import com.app.chat.utils.EmojiUtils;
 import com.app.chat.utils.Utils;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.facebook.ads.AdSize;
 import com.facebook.ads.AdView;
 import com.google.firebase.database.core.view.Change;
@@ -170,6 +172,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
             messageViewHolder.base.setVisibility(View.GONE);
         } else if (messageOf.get(i).getIsAdmin().equals("false")) {
+
+
+                YoYo.with(Techniques.SlideInUp)
+                        .duration(1000)
+                        .playOn(messageViewHolder.base);
+
             final MessageReceive mf = messageOf.get(i);
             if (isAdminUser) {
                 //   Log.e(TAG, "onBindViewHolder: si es admin");
@@ -311,7 +319,9 @@ if(!mf.getSnap().equals(nk.getIdentifier())) {
                 messageViewHolder.card_back.setVisibility(View.GONE);
             }
         } else if (messageOf.get(i).getIsAdmin().equals("true")) {
-
+            YoYo.with(Techniques.SlideInDown)
+                    .duration(1500)
+                    .playOn(messageViewHolder.base);
             SetupMessageAdmin(messageOf.get(i), messageViewHolder);
 
         }

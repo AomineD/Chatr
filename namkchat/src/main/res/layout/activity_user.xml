@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".UserActivity">
+
+<com.airbnb.lottie.LottieAnimationView
+    android:layout_width="200dp"
+    android:id="@+id/anim_center"
+    app:lottie_autoPlay="true"
+    android:layout_alignParentTop="true"
+    app:lottie_loop="true"
+    android:layout_marginTop="120dp"
+    android:layout_centerHorizontal="true"
+    app:lottie_fileName="chat_anim.json"
+    android:layout_height="200dp"/>
+
+    <TextView
+        android:id="@+id/below_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/anim_center"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="@font/roboto_black"
+        android:gravity="center"
+        android:text="@string/chat_info"
+        android:textAlignment="center"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="14sp" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_below="@id/below_text"
+        android:layout_marginEnd="50dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="10dp"
+        android:id="@+id/textip"
+        android:layout_marginBottom="10dp"
+        android:layout_height="wrap_content">
+
+        <AutoCompleteTextView
+            android:id="@+id/usern"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/username"
+            android:inputType="textEmailAddress"
+            android:maxLines="1"
+            android:singleLine="true" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_marginTop="10dp"
+        android:id="@+id/btn_go"
+        android:background="@drawable/back_drawable"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/textip"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:text="@string/go_home"
+            />
+
+    </RelativeLayout>
+
+</RelativeLayout>

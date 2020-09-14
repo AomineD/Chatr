@@ -40,7 +40,8 @@ public class MainActivity extends AppCompatActivity {
         fr.setId_native_banner(idsnativ);*/
         // fr.setDebg(true);
         //  kai  kee206
-        fr.setIdentifier("kee206", R.id.frg);
+
+        fr.setIdentifier(true, R.id.frg);
 
         ArrayList<String> idsnative = new ArrayList<>();
 
