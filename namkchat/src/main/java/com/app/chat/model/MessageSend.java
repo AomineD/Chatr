@@ -3,15 +3,15 @@ package com.app.chat.model;
 import java.util.Map;
 
 public class MessageSend extends Message {
-    public Map getHora() {
+    public long getHora() {
         return hora;
     }
 
-    public void setHora(Map hora) {
+    public void setHora(long hora) {
         this.hora = hora;
     }
 
-    private Map hora;
+    private long hora;
 
     public MessageSend(){}
 

@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.app.chat.ChangeFragment;
 import com.app.chat.R;
 import com.app.chat.model.ChanInfo;
-import com.google.firebase.database.core.view.Change;
 
 import java.util.ArrayList;
 

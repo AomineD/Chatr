@@ -17,6 +17,7 @@ import com.app.chat.utils.Utils;
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.dagf.admobnativeloader.EasyFAN;
 import com.facebook.ads.AdSettings;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.fragment.app.Fragment;
@@ -41,19 +42,22 @@ import com.app.chat.model.MessageReceive;
 import com.app.chat.model.MessageSend;
 import com.facebook.ads.AdSize;
 import com.facebook.ads.AdView;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
-import com.google.firebase.database.core.view.Change;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.ServerTimestamp;
 import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -81,81 +85,48 @@ public class NamkoFragment extends Fragment {
     private boolean withAds;
     private String id_banner;
 
-    private DatabaseReference referenceChats;
-    private DatabaseReference chatUnic;
     private void checkMyPrivateChats(){
+FirebaseFirestore.getInstance().collection(key_chan).addSnapshotListener(new EventListener<QuerySnapshot>() {
+    @Override
+    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
 
-        referenceChats.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+        if(value != null) {
+            for (DocumentChange documentChange : value.getDocumentChanges()) {
 
-                String thiskey = dataSnapshot.getKey();
-                String[] parts = dataSnapshot.getKey().split("-chat-");
-                for(int i=0; i < parts.length; i++){
+                if (documentChange.getType() == DocumentChange.Type.ADDED) {
+                    String thiskey = documentChange.getDocument().getId();
+                    String[] parts = documentChange.getDocument().getId().split("-chat-");
+                    for (int i = 0; i < parts.length; i++) {
 
-                    if(parts[i].equals(getIdentifier())){
-                        chatUnic = dataSnapshot.getRef();
-                        configData();
+                        if (parts[i].equals(getIdentifier())) {
+                            configData();
+                        }
                     }
                 }
-
-
             }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+        }
+    }
+});
 
     }
 
     private void configData() {
-        chatUnic.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                if(dataSnapshot.hasChild("channelName")){
-                  ChanInfo  chanInfo = dataSnapshot.getValue(ChanInfo.class);
+
+FirebaseFirestore.getInstance().collection(key_chan).addSnapshotListener(new EventListener<QuerySnapshot>() {
+    @Override
+    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+        if(value != null) {
+            for (DocumentChange documentChange : value.getDocumentChanges()) {
+                if (documentChange.getType() == DocumentChange.Type.ADDED) {
+                    ChanInfo  chanInfo = documentChange.getDocument().toObject(ChanInfo.class);
                     ChangeFragment.processNewChan(chanInfo);
                 }
-
             }
+        }
 
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+    }
+});
 
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
     }
 
     public void setId_native_banner(ArrayList<String> id_native_banner) {
@@ -166,8 +137,8 @@ public class NamkoFragment extends Fragment {
     private ArrayList<String> id_native_banner = new ArrayList<>();
     public static int sizeIds = 0;
 
-    private long diasMax = 5;
-    private int saizMax = 1000;
+    private long diasMax = 4;
+    private int saizMax = 50;
 
     /**
      Si pasa de estos días sera borrado el mensaje
@@ -242,19 +213,13 @@ public void setMaxMessage(int max){
     public void setLang_chat(String lang_chat) {
         this.lang_chat = lang_chat;
 
-        if(database != null){
-            database = null;
+        if(adapter != null) {
             messageArrayList.clear();
             adapter.notifyDataSetChanged();
         }
 
-        database = FirebaseDatabase.getInstance();
-        referenceChats = database.getReference();
-        databaseReference = database.getReference(lang_chat);
-
         checkMyPrivateChats();
 
-        referenceBan = database.getReference("bans");
 
         if(adapter == null){
             adapter = new MessageAdapter(getActivity(), messageArrayList, isAdminSender);
@@ -340,7 +305,6 @@ return mensDef;
     }
 
 
-    private DatabaseReference referenceBan;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -372,6 +336,9 @@ startActivity(new Intent(getContext(), UserActivity.class));
                 Animatoo.animateZoom(getContext());
             }
         }
+
+        if(getContext() != null)
+       FirebaseApp.initializeApp(getContext());
 
     }
 
@@ -457,8 +424,8 @@ else if(getActivity() != null && isAutoUser && Utils.isUserSaved()){
 
 //        AdSettings.setDebugBuild(true);
 
-        if(isDebug)
-        Log.e("MAIN", "onCreateView: CHAT => "+lang_chat+" BASE DE DATOS => "+databaseReference.getRef().toString());
+
+       // Log.e("MAIN", "onCreateView: CHAT => "+lang_chat+" BASE DE DATOS => "+databaseReference.getRef().toString());
         adapter = new MessageAdapter(getActivity(), messageArrayList, isAdminSender);
 
         adapter.setFragmentInfo(this,getFragmentManager());
@@ -485,7 +452,7 @@ else if(getActivity() != null && isAutoUser && Utils.isUserSaved()){
                 alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Si, banear", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        referenceBan.push().setValue(model);
+                        FirebaseFirestore.getInstance().collection("bans").add(model);
                         Toast.makeText(getContext(), "Baneado con éxito", Toast.LENGTH_SHORT).show();
                         OnBanUserList.whenBanUser(name);
                     }
@@ -633,9 +600,6 @@ if(getContext() != null && withAds) {
 
 
     private boolean isDebug = false;
-
-    private FirebaseDatabase database;
-    private DatabaseReference databaseReference;
     private ArrayList<MessageReceive> messageArrayList = new ArrayList<>();
 
 public void setDebg (boolean ss){
@@ -647,134 +611,114 @@ public static final int mansi = 3;
 
 
     // =========================== CONFIG REFERENCE ========================== //
+    private String key_chan = "channelInfo";
     private void SetupRef() {
-        databaseReference.addChildEventListener(new ChildEventListener() {
+
+        FirebaseFirestore.getInstance().collection(key_chan).document(lang_chat).collection("messages").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                if(!dataSnapshot.hasChild("channelName")) {
-                    MessageReceive m = dataSnapshot.getValue(MessageReceive.class);
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if(value != null) {
+                    for (DocumentChange documentChange : value.getDocumentChanges()) {
+                        if (documentChange.getType() == DocumentChange.Type.ADDED) {
+                            MessageReceive m = documentChange.getDocument().toObject(MessageReceive.class);
+
+                             m.setMesg(transform(m.getMesg()));
+
+                                if (getTimeInInteger(m.getHora())) {
+                                    FirebaseFirestore.getInstance().collection(key_chan).document(lang_chat).collection("messages").document(documentChange.getDocument().getId()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.e("MAIN", "onSuccess: borrado " );
+                                        }
+                                    });
+                                }
 
 
-                    if (m != null && isRudness(m.getMesg())) {
 
-                        m.setMesg(transform(m.getMesg()));
+                            if (documentChange.getDocument().getId().equals(keyactual)) {
+                                return;
+                            }
 
-                    }
+                            keyactual = documentChange.getDocument().getId();
 
 
-                    if (m == null) {
-                        return;
-                    } else {
-                        if (getTimeInInteger(m.getHora())) {
-                            dataSnapshot.getRef().removeValue();
+                            if (withAds) {
+                                if (fr >= mansi) {
+                                    MessageReceive mw = new MessageReceive();
+                                    mw.isAd = true;
+                                    adapter.addMessage(mw);
+                                    fr = 0;
+                                } else {
+                                    fr++;
+                                }
+                            }
+
+
+                            if (!getTimeInInteger(m.getHora()) && adapter != null) {
+                                adapter.addMessage(m);
+                            } else if (adapter == null) {
+                                messageArrayList.add(m);
+                            }
+
+                            if (messageArrayList.size() >= saizMax) {
+                                if (isLongTo(m.getHora())) {
+                                    FirebaseFirestore.getInstance().collection(key_chan).document(lang_chat).collection("messages").document(documentChange.getDocument().getId()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.e("MAIN", "onSuccess: borrado " );
+                                        }
+                                    });
+                                }
+                            }
+                        }else if(documentChange.getType() == DocumentChange.Type.REMOVED){
+                            adapter.notifyDataSetChanged();
                         }
-                    }
-
-
-                    if (dataSnapshot.getKey().equals(keyactual)) {
-                        return;
-                    }
-
-                    keyactual = dataSnapshot.getKey();
-
-
-                    if (isDebug) {
-                        Log.e("MAIN", "onChildAdded: m es null = " + dataSnapshot.getKey() + (" mensaje  = ") + (m != null ? m.getMesg() : "ES NULL PAPA"));
-                    }
-
-
-                    if (withAds) {
-                        if (fr >= mansi) {
-                            MessageReceive mw = new MessageReceive();
-                            mw.isAd = true;
-                            adapter.addMessage(mw);
-                            fr = 0;
-                        } else {
-                            fr++;
-                        }
-                    }
-
-
-                    if (!getTimeInInteger(m.getHora()) && adapter != null) {
-                        adapter.addMessage(m);
-                    } else if (adapter == null) {
-                        messageArrayList.add(m);
-                    }
-
-                    if (messageArrayList.size() >= saizMax) {
-                        if (isLongTo(m.getHora(), 1)) {
-                            dataSnapshot.getRef().removeValue();
-                        }
-                    }
-
-                    // Log.e("MAIN", "onChildAdded: "+messageArrayList.size());
-
-                }else{
-
-                   ChanInfo chanInfo = dataSnapshot.getValue(ChanInfo.class);
-                    ChangeFragment.processNewChan(chanInfo);
-                    if(chanInfo != null && chanInfo.identifierChannel.equals(lang_chat) && chanInfo != NamkoFragment.chanInfo){
-
-                        NamkoFragment.chanInfo = chanInfo;
-
                     }
                 }
-
-
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                if(adapter != null)
-adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                // Log.e("MAIN", "onChildAdded: "+messageArrayList.size());
             }
         });
 
+      FirebaseFirestore.getInstance().collection(key_chan).addSnapshotListener(new EventListener<QuerySnapshot>() {
+          @Override
+          public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
 
-referenceBan.addChildEventListener(new ChildEventListener() {
+              if(value != null){
+                  for(DocumentChange documentChange : value.getDocumentChanges()){
+
+                      if(documentChange.getType() == DocumentChange.Type.ADDED){
+
+                          ChanInfo chanInfo = documentChange.getDocument().toObject(ChanInfo.class);
+                          ChangeFragment.processNewChan(chanInfo);
+                          if(chanInfo.identifierChannel.equals(lang_chat) && chanInfo != NamkoFragment.chanInfo){
+
+                              NamkoFragment.chanInfo = chanInfo;
+
+                          }
+                      }
+
+                  }
+
+              }
+
+          }
+      });
+
+
+
+FirebaseFirestore.getInstance().collection("bans").addSnapshotListener(new EventListener<QuerySnapshot>() {
     @Override
-    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-        BanModel model = dataSnapshot.getValue(BanModel.class);
+    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+        if(value != null) {
+            for (DocumentChange documentChange : value.getDocumentChanges()) {
 
-        if(model != null){
-            nameBanneds.add(model.name);
+                if (documentChange.getType() == DocumentChange.Type.ADDED) {
+                    BanModel model = documentChange.getDocument().toObject(BanModel.class);
+
+                        nameBanneds.add(model.name);
+                }
+            }
         }
-
-    }
-
-    @Override
-    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-    }
-
-    @Override
-    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-    }
-
-    @Override
-    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-    }
-
-    @Override
-    public void onCancelled(@NonNull DatabaseError databaseError) {
-
     }
 });
 
@@ -785,7 +729,7 @@ referenceBan.addChildEventListener(new ChildEventListener() {
 
     private ArrayList<String> nameBanneds = new ArrayList<>();
     private void SendMessage(boolean isMedia) {
-        if (database != null && (!message.getText().toString().isEmpty() || isMedia)) {
+        if ((!message.getText().toString().isEmpty() || isMedia)) {
             if(nameBanneds.contains(nameF)){
                 Toast.makeText(getContext(), "Has sido baneado por algun admin", Toast.LENGTH_SHORT).show();
                 return;
@@ -793,7 +737,8 @@ referenceBan.addChildEventListener(new ChildEventListener() {
             MessageSend mss = new MessageSend();
 
             mss.setIsAdmin(isAdminSender ? "true" : "false");
-            mss.setHora(ServerValue.TIMESTAMP);
+
+            mss.setHora(Timestamp.now().toDate().getTime());
 if(!isMedia) {
     String men = message.getText().toString();
 /*
@@ -817,16 +762,16 @@ if(messageArrayList.size() < 1 && chanInfo == null){
     chanInfo = new ChanInfo();
     chanInfo.channelName = lang_chat;
     chanInfo.identifierChannel = lang_chat;
-    databaseReference.push().setValue(chanInfo);
+    FirebaseFirestore.getInstance().collection(key_chan).document(lang_chat).set(chanInfo);
     ChangeFragment.processNewChan(chanInfo);
 }else if(messageArrayList.size() < 1){
-    databaseReference.push().setValue(chanInfo);
+    FirebaseFirestore.getInstance().collection(key_chan).document(lang_chat).set(chanInfo);
    ChangeFragment.processNewChan(chanInfo);
 }
             mss.setName_of(nameF);
             mss.setUrlProfilePic(urrPhoto);
             message.setText("");
-            databaseReference.push().setValue(mss);
+            FirebaseFirestore.getInstance().collection(key_chan).document(lang_chat).collection("messages").add(mss);
             if (isDebug)
                 Log.e("MAIN", "SendMessage: MENSAJE ENVIADO = " + mss);
             //adapter.addMessage(mss);
@@ -905,7 +850,7 @@ private String cl;
     }
 
 
-    private boolean isLongTo(Long pastvalue, long max) {
+    private boolean isLongTo(Long pastvalue) {
 
         // long pastvalue = Long.parseLong(codigoHora);
         // Default time zone.
@@ -915,7 +860,7 @@ private String cl;
         long dias = TimeUnit.MILLISECONDS.toDays(zulu.toDate().getTime() - pastvalue);
 
 
-        return dias > max;
+        return dias > 1;
 
 
 

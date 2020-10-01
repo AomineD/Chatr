@@ -29,7 +29,6 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.facebook.ads.AdSize;
 import com.facebook.ads.AdView;
-import com.google.firebase.database.core.view.Change;
 import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
@@ -141,7 +140,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     public void onBindViewHolder(@NonNull MessageViewHolder messageViewHolder, final int i) {
         messageViewHolder.img_admin.setVisibility(View.GONE);
 
-
+      //  Log.e(TAG, "onBindViewHolder CHAT: "+getItemCount() );
         if (messageOf.get(i).isAd && messageOf.get(i).getIsAdmin().equals("false")) {
 
             if (!messageViewHolder.isAdLoaded && !isNativeAd) {

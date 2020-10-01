@@ -60,22 +60,17 @@ public class MainActivity extends AppCompatActivity {
 
         ArrayList<ChanInfo> sds = new ArrayList<>();
 
-ChanInfo chanInfo = new ChanInfo();
-chanInfo.identifierChannel = "Español \uD83C\uDDEA\uD83C\uDDF8";
-chanInfo.channelName = "Español \uD83C\uDDEA\uD83C\uDDF8";
+        ChanInfo chanInfo = new ChanInfo();
+        chanInfo.identifierChannel = "Español \uD83C\uDDEA\uD83C\uDDF8";
+        chanInfo.channelName = "Español \uD83C\uDDEA\uD83C\uDDF8";
 
         ChanInfo chanInfo2 = new ChanInfo();
-        chanInfo2.identifierChannel = "Esp \uD83C\uDDEA\uD83C\uDDF8";
-        chanInfo2.channelName = "Esp \uD83C\uDDEA\uD83C\uDDF8";
+        chanInfo2.identifierChannel = "Latino \uD83C\uDDF2\uD83C\uDDFD";
+        chanInfo2.channelName = "Latino \uD83C\uDDF2\uD83C\uDDFD";
 
-
-        ChanInfo chanInfo3 = new ChanInfo();
-        chanInfo3.identifierChannel = "Hispano \uD83C\uDDEA\uD83C\uDDF8";
-        chanInfo3.channelName = "Hispano \uD83C\uDDEA\uD83C\uDDF8";
-       // ChangeFragment.setListChannels(sds);
-sds.add(chanInfo);
+        // ChangeFragment.setListChannels(sds);
+        sds.add(chanInfo);
         sds.add(chanInfo2);
-        sds.add(chanInfo3);
 
      ChangeFragment.setListChannels(sds);
         //
