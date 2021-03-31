@@ -696,6 +696,9 @@ public static final int mansi = 3;
                 if(value != null) {
                     for (DocumentChange documentChange : value.getDocumentChanges()) {
                         if (documentChange.getType() == DocumentChange.Type.ADDED) {
+                            if(adapter != null){
+                                adapter.setIdMain(identifier);
+                            }
                             MessageReceive m = documentChange.getDocument().toObject(MessageReceive.class);
                           //  Log.e("MAIN", "onEvent: added" );
                              m.setMesg(transform(m.getMesg()));

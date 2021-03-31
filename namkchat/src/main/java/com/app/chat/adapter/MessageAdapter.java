@@ -656,6 +656,9 @@ setupNormalMessage(messageViewHolder, i);
     }
 
     public boolean isMain(int pos){
+
+        Log.e(TAG, "isMain: "+messageOf.get(pos).getSnap()+" VERDADERO: "+idMain );
+
        return messageOf.get(pos).getSnap().equals(idMain);
     }
 }
