@@ -206,7 +206,7 @@ protected NamkoFragment setDiasMaximos(long diasmax){
         isAutoUser = ist;
         this.ContainerId = container_id;
     }
-    protected interface OnClickingSend{
+    public interface OnClickingSend{
         void OnSend();
     }
 
