@@ -178,7 +178,7 @@
 
         <LinearLayout
             android:id="@+id/adlay"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
             android:orientation="vertical"
@@ -195,7 +195,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:background="@drawable/border_strok"
                 android:orientation="vertical"
                 android:padding="2dp">
 
@@ -204,7 +203,7 @@
             <include
                 android:id="@+id/native_banner_ad"
                 layout="@layout/native_ad_facebook_banner"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
             <ImageView
                 android:layout_width="match_parent"

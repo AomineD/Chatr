@@ -57,6 +57,7 @@ webView.getSettings().setJavaScriptEnabled(true);
 
 NamkoFragment namkoFragment = new NamkoFragment.Builder(chanInfos, a.channelName)
         .setUserAutomatic()
+        .withBannerAds("ca-app-pub-3940256099942544/6300978111")
         .setTextInRegister("Hola, registrate en nuestra app ahora")
         .build();
 

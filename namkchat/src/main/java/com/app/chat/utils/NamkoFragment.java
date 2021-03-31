@@ -18,6 +18,11 @@ import com.app.chat.chat.DesignModel;
 import com.app.chat.model.ChanInfo;
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.dagf.admobnativeloader.EasyFAN;
+import com.facebook.ads.Ad;
+import com.facebook.ads.AdError;
+import com.facebook.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -415,7 +420,7 @@ startActivity(new Intent(getContext(), UserActivity.class));
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
        // Log.e("MAIN", "onCreateView: a" );
-        View v = inflater.inflate(R.layout.fragment_namko, container, false);
+        final View v = inflater.inflate(R.layout.fragment_namko, container, false);
 
 vs = v;
         v.findViewById(R.id.change_channel).setOnClickListener(new View.OnClickListener() {
@@ -581,14 +586,57 @@ SetupadapteR();
 
 
 if(getContext() != null && withAds) {
-    LinearLayout d = v.findViewById(R.id.containads);
+    if(Utils.isAudienceAd(id_banner)) {
+        final LinearLayout d = v.findViewById(R.id.containads);
 
-    AdView ad = new AdView(getContext(), id_banner, AdSize.BANNER_HEIGHT_50);
+        AdView ad = new AdView(getContext(), id_banner, AdSize.BANNER_HEIGHT_50);
+        ad.loadAd(ad.buildLoadAdConfig().withAdListener(new AdListener() {
+            @Override
+            public void onError(Ad ad, AdError adError) {
+                d.setVisibility(View.GONE);
+            }
 
-    ad.loadAd();
+            @Override
+            public void onAdLoaded(Ad ad) {
+                d.setVisibility(View.VISIBLE);
+            }
 
-    d.addView(ad);
+            @Override
+            public void onAdClicked(Ad ad) {
 
+            }
+
+            @Override
+            public void onLoggingImpression(Ad ad) {
+
+            }
+        }).build());
+
+        d.addView(ad);
+
+    }else if(Utils.isAdmobAd(id_banner)){
+        final LinearLayout d = v.findViewById(R.id.containads);
+
+        com.google.android.gms.ads.AdView ad = new com.google.android.gms.ads.AdView(getContext());
+        ad.setAdSize(com.google.android.gms.ads.AdSize.BANNER);
+        ad.setAdUnitId(id_banner);
+        ad.setAdListener(new com.google.android.gms.ads.AdListener(){
+            @Override
+            public void onAdFailedToLoad(LoadAdError loadAdError) {
+                super.onAdFailedToLoad(loadAdError);
+                d.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+                d.setVisibility(View.VISIBLE);
+            }
+        });
+        ad.loadAd(new AdRequest.Builder().build());
+
+        d.addView(ad);
+    }
 
     //Log.e("MAIN", "onCreateView: "+id_native_banner.size() );
     if(id_native_banner != null && id_native_banner.size() > 0) {

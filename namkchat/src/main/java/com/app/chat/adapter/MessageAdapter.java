@@ -1,5 +1,6 @@
 package com.app.chat.adapter;
 
+import android.animation.Animator;
 import android.app.Activity;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -26,8 +27,13 @@ import com.app.chat.utils.EmojiUtils;
 import com.app.chat.utils.Utils;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.facebook.ads.Ad;
+import com.facebook.ads.AdError;
+import com.facebook.ads.AdListener;
 import com.facebook.ads.AdSize;
 import com.facebook.ads.AdView;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.LoadAdError;
 import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
@@ -37,6 +43,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import hani.momanii.supernova_emoji_library.Helper.EmojiconTextView;
@@ -60,10 +68,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     }
 
     public void setIdBanner(String id_intersticial) {
-        this.id_intersticial = id_intersticial;
+        this.id_banner = id_intersticial;
     }
 
-    private String id_intersticial;
+    private String id_banner;
     private boolean card_backcolorAssigned;
 
     public void setActiomtextcolor(int actiomtextcolor) {
@@ -147,12 +155,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         if (messageOf.get(i).isAd && messageOf.get(i).getIsAdmin().equals("false")) {
 
             if (!messageViewHolder.isAdLoaded && !isNativeAd) {
-                messageViewHolder.adView2 = new AdView(mContext, id_intersticial, AdSize.BANNER_HEIGHT_50);
-                messageViewHolder.adView2.loadAd();
-                messageViewHolder.adView.addView(messageViewHolder.adView2);
-                messageViewHolder.isAdLoaded = true;
-                hideNativeAd(messageViewHolder, i);
-                showBannerAd(messageViewHolder);
+
+               showBannerAdInLayout(messageViewHolder, i);
 
             } else {
                 hideBannerAd(messageViewHolder);
@@ -183,6 +187,64 @@ setupNormalMessage(messageViewHolder, i);
             SetupMessageAdmin(messageOf.get(i), messageViewHolder);
 
         }
+    }
+
+    private void showBannerAdInLayout(final MessageViewHolder messageViewHolder, int i) {
+        messageViewHolder.adView.removeAllViews();
+        if(Utils.isAdmobAd(id_banner)){
+            messageViewHolder.adViewAdmob = new com.google.android.gms.ads.AdView(mContext);
+         messageViewHolder.adViewAdmob.setAdSize(com.google.android.gms.ads.AdSize.BANNER);
+         messageViewHolder.adViewAdmob.setAdUnitId(id_banner);
+            messageViewHolder.adViewAdmob.setAdListener(new com.google.android.gms.ads.AdListener(){
+                @Override
+                public void onAdFailedToLoad(LoadAdError loadAdError) {
+                    super.onAdFailedToLoad(loadAdError);
+                //    Log.e(TAG, "onAdFailedToLoad: "+loadAdError.getMessage() );
+                    messageViewHolder.adView.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onAdLoaded() {
+                    super.onAdLoaded();
+                //    Log.e(TAG, "onAdLoaded: va" );
+                    messageViewHolder.adView.setVisibility(View.VISIBLE);
+                }
+            });
+
+            messageViewHolder.adViewAdmob.loadAd(new AdRequest.Builder().build());
+
+            messageViewHolder.adView.addView(messageViewHolder.adViewAdmob);
+        }else if(Utils.isAudienceAd(id_banner)) {
+            messageViewHolder.adViewAudience = new AdView(mContext, id_banner, AdSize.BANNER_HEIGHT_50);
+            messageViewHolder.adViewAudience.loadAd(messageViewHolder.adViewAudience.buildLoadAdConfig().withAdListener(new AdListener() {
+                @Override
+                public void onError(Ad ad, AdError adError) {
+                    messageViewHolder.isAdLoaded = false;
+                    messageViewHolder.adView.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onAdLoaded(Ad ad) {
+                    messageViewHolder.isAdLoaded = true;
+                    messageViewHolder.adView.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onAdClicked(Ad ad) {
+
+                }
+
+                @Override
+                public void onLoggingImpression(Ad ad) {
+
+                }
+            }).build());
+            messageViewHolder.adView.addView(messageViewHolder.adViewAudience);
+
+        }
+
+        hideNativeAd(messageViewHolder, i);
+        showBannerAd(messageViewHolder);
     }
 
     private void goChatPrivate(final MessageReceive mf, final int i) {
@@ -361,7 +423,8 @@ setupNormalMessage(messageViewHolder, i);
         private EmojiconTextView mesnAnother;
         private CardView backing;
         private LinearLayout adView;
-        private AdView adView2;
+        private AdView adViewAudience;
+        private com.google.android.gms.ads.AdView adViewAdmob;
         private View base;
         private ImageView img_admin;
         private View adve;
@@ -454,7 +517,7 @@ setupNormalMessage(messageViewHolder, i);
         messageViewHolder.adve.setVisibility(View.VISIBLE);
     }
 
-    private void isMainUser(MessageViewHolder messageViewHolder){
+    private void isMainUser(final MessageViewHolder messageViewHolder){
         messageViewHolder.mesnAnother.setVisibility(View.GONE);
 
         LinearLayout.LayoutParams l = (LinearLayout.LayoutParams) messageViewHolder.backing.getLayoutParams();
@@ -462,14 +525,60 @@ setupNormalMessage(messageViewHolder, i);
         l.gravity = Gravity.END;
 
         messageViewHolder.backing.setLayoutParams(l);
+
+        messageViewHolder.itemView.setVisibility(View.GONE);
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                mContext.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        YoYo.with(Techniques.SlideInRight)
+                                .duration(400)
+                                .onStart(new YoYo.AnimatorCallback() {
+                                    @Override
+                                    public void call(Animator animator) {
+                                        messageViewHolder.itemView.setVisibility(View.VISIBLE);
+                                    }
+                                })
+                                .playOn(messageViewHolder.itemView);
+                    }
+                });
+
+            }
+        }, 200);
+
         messageViewHolder.mesn.setVisibility(View.GONE);
         messageViewHolder.prf_pic.setVisibility(View.GONE);
         messageViewHolder.name.setVisibility(View.GONE);
         messageViewHolder.mesn.setVisibility(View.VISIBLE);
     }
 
-    private void NoMain(MessageViewHolder messageViewHolder){
+    private void NoMain(final MessageViewHolder messageViewHolder){
         messageViewHolder.mesnAnother.setVisibility(View.VISIBLE);
+
+        messageViewHolder.itemView.setVisibility(View.GONE);
+
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                mContext.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        YoYo.with(Techniques.SlideInLeft)
+                                .duration(400)
+                                .onStart(new YoYo.AnimatorCallback() {
+                                    @Override
+                                    public void call(Animator animator) {
+                                        messageViewHolder.itemView.setVisibility(View.VISIBLE);
+                                    }
+                                })
+                                .playOn(messageViewHolder.itemView);
+                    }
+                });
+
+            }
+        }, 100);
 
         LinearLayout.LayoutParams l = (LinearLayout.LayoutParams) messageViewHolder.backing.getLayoutParams();
 
@@ -483,7 +592,7 @@ setupNormalMessage(messageViewHolder, i);
         messageViewHolder.mesn.setVisibility(View.GONE);
     }
 
-    private void setupNormalMessage(MessageViewHolder messageViewHolder, final int i){
+    private void setupNormalMessage(final MessageViewHolder messageViewHolder, final int i){
 
 
 
@@ -579,13 +688,10 @@ setupNormalMessage(messageViewHolder, i);
         if(isMain(i)){
             messageViewHolder.mesn.setText(messageOf.get(i).getMesg());
             isMainUser(messageViewHolder);
-            YoYo.with(Techniques.SlideInLeft)
-                    .duration(1000)
-                    .playOn(messageViewHolder.base);
+
+
         }else{
-            YoYo.with(Techniques.SlideInRight)
-                    .duration(1000)
-                    .playOn(messageViewHolder.base);
+
             NoMain(messageViewHolder);
             messageViewHolder.mesnAnother.setText(messageOf.get(i).getMesg());
             Picasso.get().load(Uri.parse(messageOf.get(i).getUrlProfilePic())).placeholder(R.drawable.ic_avatar_default).fit().into(messageViewHolder.prf_pic);
@@ -656,8 +762,6 @@ setupNormalMessage(messageViewHolder, i);
     }
 
     public boolean isMain(int pos){
-
-        Log.e(TAG, "isMain: "+messageOf.get(pos).getSnap()+" VERDADERO: "+idMain );
 
        return messageOf.get(pos).getSnap().equals(idMain);
     }
