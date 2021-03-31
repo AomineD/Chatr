@@ -3,29 +3,49 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/background_color_def_chat"
     tools:context=".ChangeFragment">
+
 <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-<TextView
+<LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center"
-    android:layout_centerHorizontal="true"
-    android:textStyle="bold"
-    android:textColor="@color/white"
-    android:textSize="24sp"
-    android:text="@string/title_change"
-    android:id="@+id/title_chs"
-    android:layout_marginTop="5dp"
-    />
+    android:orientation="horizontal"
+    android:id="@+id/toplay"
+    android:layout_margin="5dp"
+    android:layout_height="wrap_content">
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="4dp"
+        android:id="@+id/back_btn"
+        android:padding="4dp"
+        app:srcCompat="@drawable/ar_back_big"
+        app:tint="@color/text_another_color_def_chat"
+        android:layout_gravity="center_vertical"
+        />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_gravity="center_vertical"
+        android:textStyle="bold"
+        android:textColor="@color/text_another_color_def_chat"
+        android:textSize="24sp"
+        android:text="@string/title_change"
+        android:id="@+id/title_chs"
+        />
+</LinearLayout>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:id="@+id/rec_channels"
-        android:layout_below="@id/title_chs"
+        android:layout_below="@id/toplay"
         android:layout_marginTop="5dp"
         android:layout_height="match_parent">
 

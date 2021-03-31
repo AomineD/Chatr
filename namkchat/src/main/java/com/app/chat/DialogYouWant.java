@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 public class DialogYouWant extends AlertDialog {
-    protected DialogYouWant(@NonNull Context context) {
+    public DialogYouWant(@NonNull Context context) {
         super(context);
     }
 

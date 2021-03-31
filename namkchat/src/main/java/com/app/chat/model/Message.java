@@ -51,6 +51,16 @@ public class Message {
     private String name_of;
     private String urlProfilePic;
 
+    public Message getResponseTo() {
+        return responseTo;
+    }
+
+    public void setResponseTo(Message responseTo) {
+        this.responseTo = responseTo;
+    }
+
+    private Message responseTo;
+
     private String type_mensaje;
 
     public String getIsAdmin() {

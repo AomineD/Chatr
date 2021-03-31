@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="background_color_def_chat">#fff</color>
+    <color name="text_color_def_chat">#fff</color>
+    <color name="text_another_color_def_chat">#2e2e2e</color>
+    <color name="action_color_def_chat">@color/blue_fb</color>
+    <color name="txt_action_color_def_chat">#fff</color>
+
+    <color name="background_cardmain_color_def_chat">#1e88e5</color>
+
+    <color name="background_another_color_def_chat">#fff</color>
+
+</resources>

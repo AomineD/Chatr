@@ -1,7 +1,6 @@
-package com.app.chat;
+package com.app.chat.utils;
 
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,24 +8,26 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
+
 import androidx.annotation.Nullable;
 
+import com.app.chat.ChangeFragment;
+import com.app.chat.DialogYouWant;
+import com.app.chat.R;
+import com.app.chat.chat.DesignModel;
 import com.app.chat.model.ChanInfo;
-import com.app.chat.utils.Utils;
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.dagf.admobnativeloader.EasyFAN;
-import com.facebook.ads.AdSettings;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import androidx.annotation.RestrictTo;
 import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -46,40 +47,41 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.ServerTimestamp;
 import com.squareup.picasso.Picasso;
+import com.wineberryhalley.bclassapp.TinyDB;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import hani.momanii.supernova_emoji_library.Actions.EmojIconActions;
 import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText;
-import hani.momanii.supernova_emoji_library.emoji.Emojicon;
-import okhttp3.internal.Util;
+
+import static androidx.annotation.RestrictTo.Scope.LIBRARY;
+import static com.app.chat.utils.Utils.isBanned;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
+@RestrictTo(LIBRARY)
 public class NamkoFragment extends Fragment {
 
     private boolean isAutoUser;
 
-    public void setWithAds(boolean withAds, boolean isnv, String adbanner) {
+    public NamkoFragment setWithAds(boolean withAds, String adbanner) {
         this.withAds = withAds;
         this.id_banner = adbanner;
-        this.isNativeAd = isnv;
+        return this;
     }
-
 
     private boolean isNativeAd;
     private boolean withAds;
@@ -129,8 +131,9 @@ FirebaseFirestore.getInstance().collection(key_chan).addSnapshotListener(new Eve
 
     }
 
-    public void setId_native_banner(ArrayList<String> id_native_banner) {
+    protected void setId_native_banner(ArrayList<String> id_native_banner) {
         this.id_native_banner = id_native_banner;
+        isNativeAd = true;
         sizeIds = id_native_banner.size();
     }
 
@@ -143,29 +146,38 @@ FirebaseFirestore.getInstance().collection(key_chan).addSnapshotListener(new Eve
     /**
      Si pasa de estos días sera borrado el mensaje
       **/
-public void setDiasMaximos(long diasmax){
+protected NamkoFragment setDiasMaximos(long diasmax){
     this.diasMax = diasmax;
+    return this;
 }
 
 
-public void setMaxMessage(int max){
+    protected void setMaxMessage(int max){
     this.saizMax = max;
 }
 
-    public NamkoFragment() {
+    /**
+     * USE BUILDER INSTEAD
+     */
+    protected NamkoFragment() {
         // Required empty public constructor
     }
 
     public int[] cc = new int[6];
 
-    public void setColors(int cardMain, int cardanother, int cardBackaction, int actioncolor, int textcolor, int textcoloran){
+    private int colorChatAll;
+    protected void setColors(DesignModel designModel){
+            cc[0] = designModel.getColorBackMainUser();
+            cc[1] = designModel.getColorBack();
+            cc[2] = designModel.getAction_back();
+            cc[3] = designModel.getAction_txt_back();
+            cc[4] = designModel.getTxt();
+            cc[5] = designModel.getTxtColorAnother();
 
-            cc[0] = cardBackaction;
-            cc[1] = cardanother;
-            cc[2] = cardMain;
-            cc[3] = actioncolor;
-            cc[4] = textcolor;
-            cc[5] = textcoloran;
+            if(designModel.getColorBackgroundChat() != 0){
+                colorChatAll = designModel.getColorBackgroundChat();
+            }
+
             colorAssigned = true;
 
     }
@@ -180,20 +192,20 @@ public void setMaxMessage(int max){
         return nameF;
     }
 
-    public void setIdentifier(String j, int container_id){
+    protected void setIdentifier(String j, int container_id){
         identifier = j;
     this.ContainerId = container_id;
     }
 
-    public void setIdentifier(boolean ist, int container_id){
+    protected void setIdentifier(boolean ist, int container_id){
         isAutoUser = ist;
         this.ContainerId = container_id;
     }
-    public interface OnClickingSend{
+    protected interface OnClickingSend{
         void OnSend();
     }
 
-    public void setListenerMedia(OnClickmedia listenerMedia) {
+    protected void setListenerMedia(OnClickmedia listenerMedia) {
         ListenerMedia = listenerMedia;
     }
 
@@ -203,7 +215,7 @@ public void setMaxMessage(int max){
 
     private OnClickingSend clikS;
 
-    public void setClickSendListener(OnClickingSend sendListener){
+    protected void setClickSendListener(OnClickingSend sendListener){
         clikS = sendListener;
     }
 
@@ -212,37 +224,64 @@ public void setMaxMessage(int max){
 
     public void setLang_chat(String lang_chat) {
         this.lang_chat = lang_chat;
+if(identifier != null && !identifier.isEmpty()) {
+    if (adapter != null) {
+        messageArrayList.clear();
+        adapter.notifyDataSetChanged();
+    }
 
-        if(adapter != null) {
-            messageArrayList.clear();
-            adapter.notifyDataSetChanged();
-        }
+    checkMyPrivateChats();
+    SetupRef();
 
-        checkMyPrivateChats();
+    if (adapter == null) {
+        adapter = new MessageAdapter(getActivity(), messageArrayList, isAdminSender);
+    }
+
+    adapter.isNativeAd = isNativeAd;
 
 
-        if(adapter == null){
-            adapter = new MessageAdapter(getActivity(), messageArrayList, isAdminSender);
-        }
 
-        adapter.isNativeAd = isNativeAd;
+    if (lang_c != null && chanInfo == null) {
+        lang_c.setText(lang_chat);
+    } else if (lang_c != null) {
+        lang_c.setText(chanInfo.channelName);
+    }
+}
+    }
 
-        SetupRef();
+    public void setInitialChat(String lang_chat) {
+        this.lang_chat = lang_chat;
+        if(identifier != null && !identifier.isEmpty()) {
+            if (adapter != null) {
+                messageArrayList.clear();
+                adapter.notifyDataSetChanged();
+            }
 
-        if(lang_c != null && chanInfo == null){
-            lang_c.setText(lang_chat);
-        }else if(lang_c != null){
-            lang_c.setText(chanInfo.channelName);
+            checkMyPrivateChats();
+
+            if (adapter == null) {
+                adapter = new MessageAdapter(getActivity(), messageArrayList, isAdminSender);
+            }
+
+            adapter.isNativeAd = isNativeAd;
+
+
+
+            if (lang_c != null && chanInfo == null) {
+                lang_c.setText(lang_chat);
+            } else if (lang_c != null) {
+                lang_c.setText(chanInfo.channelName);
+            }
         }
     }
 
     private String url_background = "";
 
-    public void setUrl_background(String url_background) {
+    protected void setUrl_background(String url_background) {
         this.url_background = url_background;
     }
 
-    public void setBackgdrawable(int backgdrawable) {
+    protected void setBackgdrawable(int backgdrawable) {
         this.backgdrawable = backgdrawable;
         if(getContext() != null && bk != null){
             SetupBackground();
@@ -304,25 +343,15 @@ public void setMaxMessage(int max){
 return mensDef;
     }
 
+    protected String infoForRegister = "";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-        new Shutup(getContext(), new Shutup.onLoadComplete() {
-            @Override
-            public void ReadyToGo(ArrayList<String> groseriasBlock) {
-                blockeds.addAll(groseriasBlock);
-                Log.e("MAIN", "ReadyToGo: "+blockeds.size());
-            }
-
-            @Override
-            public void Failed(String erno) {
-                Log.e("MAIN", "Failed: "+erno);
-            }
-        });
+      // Log.e("MAIN", "onCreate: aja" );
         if(getContext() != null && isAutoUser) {
+            Utils.tinyDB = new TinyDB(getContext());
+
             SharedPreferences preferences = getContext().getSharedPreferences("user_chat", Context.MODE_PRIVATE);
             Utils.setPreferences(preferences);
             if(Utils.isUserSaved()){
@@ -331,24 +360,42 @@ return mensDef;
                 nameF = usern;
                 identifier = id;
             }else{
+            //    Log.e("MAIN", "onCreate: "+infoForRegister.isEmpty() );
+                if(!infoForRegister.isEmpty()){
+
+                    UserActivity.str = infoForRegister;
+                }
 UserActivity.namkoFragment = this;
 startActivity(new Intent(getContext(), UserActivity.class));
                 Animatoo.animateZoom(getContext());
             }
         }
 
-        if(getContext() != null)
-       FirebaseApp.initializeApp(getContext());
+        if(getContext() != null) {
+            FirebaseApp.initializeApp(getContext());
 
+
+            if (!colorAssigned) {
+                setColors(DesignModel.getDefault(getContext()));
+            }
+        }
     }
 
-    public void setNameP(String n, onBanUser onBanUser, onClickBackListener olikc) {
+    protected void setOnBanUserList(onBanUser onBanUserList) {
+        OnBanUserList = onBanUserList;
+    }
+
+    public void setClickBackListener(onClickBackListener clickBackListener) {
+        this.clickBackListener = clickBackListener;
+    }
+
+    protected void setNameP(String n) {
         this.nameF = n;
         if (profile_name != null)
             profile_name.setText(nameF);
-        this.OnBanUserList = onBanUser;
-    this.clickBackListener = olikc;
     }
+
+
 
 
     public boolean isAdminSender = false;
@@ -359,13 +406,15 @@ startActivity(new Intent(getContext(), UserActivity.class));
     public void shownow(){
         if(getActivity() != null)
         Utils.showCase(getActivity(), openEmoji, vs.findViewById(R.id.change_channel));
+
+        setLang_chat(lang_chat);
     }
     private View vs;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
+       // Log.e("MAIN", "onCreateView: a" );
         View v = inflater.inflate(R.layout.fragment_namko, container, false);
 
 vs = v;
@@ -413,7 +462,31 @@ else if(getActivity() != null && isAutoUser && Utils.isUserSaved()){
         emojicon.setUseSystemEmoji(false);
 
       //
+emojicon.setKeyboardListener(new EmojIconActions.KeyboardListener() {
+    @Override
+    public void onKeyboardOpen() {
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if(getActivity() != null)
+              getActivity().runOnUiThread(new Runnable() {
+                  @Override
+                  public void run() {
+                      emojicon.closeEmojIcon();
+                   //   Log.e("MAIN", "onKeyboardOpen: a" );
+                  }
+              });
+            }
+        }, 20);
 
+
+    }
+
+    @Override
+    public void onKeyboardClose() {
+
+    }
+});
 
         emojicon.ShowEmojIcon();
 
@@ -542,6 +615,7 @@ if(getContext() != null && withAds) {
 }
 
 
+setLang_chat(lang_chat);
         return v;
     }
 
@@ -585,6 +659,8 @@ if(getContext() != null && withAds) {
             Picasso.get().load(backgdrawable).fit().into(bk);
         }else if(!url_background.isEmpty()){
             Picasso.get().load(Uri.parse(url_background)).fit().into(bk);
+        }else if(getContext() != null){
+            bk.setBackgroundColor(colorChatAll);
         }
     }
 
@@ -614,14 +690,14 @@ public static final int mansi = 3;
     private String key_chan = "channelInfo";
     private void SetupRef() {
 
-        FirebaseFirestore.getInstance().collection(key_chan).document(lang_chat).collection("messages").addSnapshotListener(new EventListener<QuerySnapshot>() {
+        FirebaseFirestore.getInstance().collection(key_chan).document(lang_chat).collection("messages").orderBy("hora").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 if(value != null) {
                     for (DocumentChange documentChange : value.getDocumentChanges()) {
                         if (documentChange.getType() == DocumentChange.Type.ADDED) {
                             MessageReceive m = documentChange.getDocument().toObject(MessageReceive.class);
-
+                          //  Log.e("MAIN", "onEvent: added" );
                              m.setMesg(transform(m.getMesg()));
 
                                 if (getTimeInInteger(m.getHora())) {
@@ -634,7 +710,7 @@ public static final int mansi = 3;
                                 }
 
 
-
+                        //    Log.e("MAIN", "onEvent: "+m.getMesg() );
                             if (documentChange.getDocument().getId().equals(keyactual)) {
                                 return;
                             }
@@ -654,12 +730,13 @@ public static final int mansi = 3;
                             }
 
 
-                            if (!getTimeInInteger(m.getHora()) && adapter != null) {
-                                adapter.addMessage(m);
-                            } else if (adapter == null) {
-                                messageArrayList.add(m);
+                            if(!isBanned(m.getSnap())) {
+                                if (!getTimeInInteger(m.getHora()) && adapter != null) {
+                                    adapter.addMessage(m);
+                                } else if (adapter == null) {
+                                    messageArrayList.add(m);
+                                }
                             }
-
                             if (messageArrayList.size() >= saizMax) {
                                 if (isLongTo(m.getHora())) {
                                     FirebaseFirestore.getInstance().collection(key_chan).document(lang_chat).collection("messages").document(documentChange.getDocument().getId()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -675,10 +752,10 @@ public static final int mansi = 3;
                         }
                     }
                 }
-                // Log.e("MAIN", "onChildAdded: "+messageArrayList.size());
+                 //Log.e("MAIN", "onChildAdded: "+messageArrayList.size());
             }
         });
-
+       // Log.e("MAIN", "SetupRef: aja" );
       FirebaseFirestore.getInstance().collection(key_chan).addSnapshotListener(new EventListener<QuerySnapshot>() {
           @Override
           public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
@@ -781,7 +858,7 @@ if(messageArrayList.size() < 1 && chanInfo == null){
     }
 
 
-    public void setUrrPhoto(String urrPhoto) {
+    protected void setUrrPhoto(String urrPhoto) {
         this.urrPhoto = urrPhoto;
     }
 
@@ -792,7 +869,7 @@ public interface OnClickmedia{
     void onClickMedia(String data);
 }
 
-public void SendPersonalizedMessage(String titlediua, final String message, final String mediainfo, final String urlmedia, final String act,final String clickmedia){
+    protected void SendPersonalizedMessage(String titlediua, final String message, final String mediainfo, final String urlmedia, final String act,final String clickmedia){
 
     if(getActivity() != null) {
         final DialogYouWant dialogYouWant = new DialogYouWant(getActivity());
@@ -867,5 +944,91 @@ private String cl;
 
     }
 
+    public static class Builder{
+private NamkoFragment namkoFragment;
+private int idFragment;
+
+        public Builder(ArrayList<ChanInfo> channels, String principal_channel, int frameLayoutId)
+        {
+ChangeFragment.setListChannels(channels);
+namkoFragment = new NamkoFragment();
+namkoFragment.setInitialChat(principal_channel);
+idFragment = frameLayoutId;
+        }
+
+        public Builder(ArrayList<ChanInfo> channels, String principal_channel)
+        {
+            ChangeFragment.setListChannels(channels);
+            namkoFragment = new NamkoFragment();
+            namkoFragment.setInitialChat(principal_channel);
+        }
+
+        public Builder setUserIdentifier(String id, String username){
+            namkoFragment.setIdentifier(id, idFragment);
+            namkoFragment.setNameP(username);
+            return this;
+        }
+
+        public Builder setUserAutomatic(){
+            namkoFragment.setIdentifier(true, idFragment);
+        return this;
+        }
+
+        public Builder setUrlPhoto(String url){
+            namkoFragment.setUrrPhoto(url);
+            return this;
+        }
+
+        public Builder setUrlBackgroundImage(String url){
+            namkoFragment.setUrl_background(url);
+            return this;
+        }
+
+        public Builder setMaxDaysAndMaxCount(int maxDays, int maxCountMsg){
+            namkoFragment.setMaxMessage(maxCountMsg);
+            namkoFragment.setDiasMaximos(maxDays);
+            return this;
+        }
+
+        public Builder withBannerAds(String idbanner){
+            namkoFragment.setWithAds(true, idbanner);
+            return this;
+        }
+
+        public Builder withBannerNatives(ArrayList<String> ids_banner_nativ){
+            namkoFragment.setId_native_banner(ids_banner_nativ);
+            return this;
+        }
+
+        public Builder setDesignModel(DesignModel designModel){
+            namkoFragment.setColors(designModel);
+            return this;
+        }
+
+        public Builder setBanListener(onBanUser onBanUserL){
+            namkoFragment.setOnBanUserList(onBanUserL);
+            return this;
+            }
+
+        public Builder setSendButtonListener(OnClickingSend clickingSend){
+            namkoFragment.setClickSendListener(clickingSend);
+            return this;
+        }
+
+        public Builder setOnBackButtonPressed(onClickBackListener a){
+            namkoFragment.setClickBackListener(a);
+            return this;
+        }
+
+        public Builder setTextInRegister(String txt){
+            namkoFragment.infoForRegister = txt;
+            return this;
+        }
+
+        public NamkoFragment build(){
+            return namkoFragment;
+        }
+
+    }
 
 }

@@ -6,8 +6,9 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application>
-        <activity android:name=".UserActivity"></activity>
-        <activity android:name=".ViewListActivity"></activity>
+        <activity android:name=".ChatterActivity"></activity>
+        <activity android:name=".utils.UserActivity" />
+        <activity android:name=".ViewListActivity" />
     </application>
 
 </manifest>

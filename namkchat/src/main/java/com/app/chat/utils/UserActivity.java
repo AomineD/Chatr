@@ -1,18 +1,27 @@
-package com.app.chat;
+package com.app.chat.utils;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.app.chat.utils.Utils;
+import com.app.chat.R;
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 
 public class UserActivity extends AppCompatActivity {
 
     public static NamkoFragment namkoFragment;
+    public static String str = "";
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        str = "";
+    }
+
     private boolean isReady = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +29,14 @@ public class UserActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user);
 
         final AutoCompleteTextView auj = findViewById(R.id.usern);
+
+        TextView ca = findViewById(R.id.below_text);
+
+        if(str.isEmpty()){
+            str = getString(R.string.chat_info);
+        }
+
+ca.setText(str);
 
         findViewById(R.id.btn_go).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -31,7 +48,7 @@ public class UserActivity extends AppCompatActivity {
                     String idf = Utils.createUserIdentifier(usn);
                     Utils.saveData(idf, usn);
                     namkoFragment.identifier = idf;
-                    namkoFragment.setNameP(usn, namkoFragment.OnBanUserList, namkoFragment.clickBackListener);
+                    namkoFragment.setNameP(usn);
                     isReady = true;
                onBackPressed();
                namkoFragment.shownow();

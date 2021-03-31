@@ -8,6 +8,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.chat.ChangeFragment;
@@ -58,9 +60,9 @@ notifyDataSetChanged();
 });
 
 if(needed.equals(selectedChannel)){
-    holder.relativeLayout.setBackground(m.getResources().getDrawable(R.drawable.border_select));
+    holder.relativeLayout.setCardBackgroundColor(ContextCompat.getColor(m, R.color.blue_fb));
 }else{
-    holder.relativeLayout.setBackground(m.getResources().getDrawable(R.drawable.invisibol));
+    holder.relativeLayout.setCardBackgroundColor(ContextCompat.getColor(m, R.color.bl));
 }
 
     }
@@ -77,11 +79,11 @@ if(needed.equals(selectedChannel)){
     class ChannelViewHolder extends RecyclerView.ViewHolder{
 
 private TextView channel_name;
-private RelativeLayout relativeLayout;
+private CardView relativeLayout;
 
         public ChannelViewHolder(@NonNull View itemView) {
             super(itemView);
-            relativeLayout = itemView.findViewById(R.id.selbor);
+            relativeLayout = itemView.findViewById(R.id.cardback);
             channel_name = itemView.findViewById(R.id.text_channel);
         }
     }

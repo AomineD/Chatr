@@ -1,7 +1,6 @@
 package com.app.chat.adapter;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Typeface;
 import android.net.Uri;
 import androidx.annotation.NonNull;
@@ -19,7 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.app.chat.ChangeFragment;
-import com.app.chat.NamkoFragment;
+import com.app.chat.utils.NamkoFragment;
 import com.app.chat.R;
 import com.app.chat.model.ChanInfo;
 import com.app.chat.model.MessageReceive;
@@ -34,11 +33,15 @@ import com.squareup.picasso.Picasso;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
+import java.util.Date;
+import java.util.TimeZone;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import hani.momanii.supernova_emoji_library.Helper.EmojiconTextView;
+
+import static com.app.chat.utils.Utils.isBanned;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
 
@@ -172,151 +175,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             messageViewHolder.base.setVisibility(View.GONE);
         } else if (messageOf.get(i).getIsAdmin().equals("false")) {
 
-
-                YoYo.with(Techniques.SlideInUp)
-                        .duration(1000)
-                        .playOn(messageViewHolder.base);
-
-            final MessageReceive mf = messageOf.get(i);
-            if (isAdminUser) {
-                //   Log.e(TAG, "onBindViewHolder: si es admin");
-                messageViewHolder.name.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        listener.clickingMessage(mf.getName_of());
-                    }
-                });
-            } else {
-                messageViewHolder.name.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                       // Log.e(TAG, "onClick: clicked" );
-if(!mf.getSnap().equals(nk.getIdentifier())) {
-    if (ChangeFragment.checkAvailibity(mf.getSnap())) {
-        Utils.createPopUpContact(mContext, new Utils.selectionListener() {
-            @Override
-            public void onConfirm() {
-                ChanInfo chanInfo = new ChanInfo();
-
-                chanInfo.identifierChannel = nk.getIdentifier() + "-chat-" + mf.getSnap();
-                chanInfo.channelName = "Chat " + nk.getNamef() + " & " + mf.getName_of();
-                // nk.setLang_chat();
-                NamkoFragment.chanInfo = chanInfo;
-                nk.setLang_chat(chanInfo.identifierChannel);
-
-                ChangeFragment.processNewChan(chanInfo);
-
-                fragmentManager.beginTransaction().replace(nk.ContainerId, nk).commitAllowingStateLoss();
-
-
-            }
-
-            @Override
-            public void onCancel() {
-
-            }
-        });
-
-    } else {
-
-        if (!ChangeFragment.checkIsSameChan(nk.getIdentifier())) {
-            goChatPrivate(mf);
-        }
-
-
-
-}
-}
-                    }
-                });
-            }
-
-
-
-            hideBannerAd(messageViewHolder);
-            hideNativeAd(messageViewHolder, i);
-            messageViewHolder.base.setVisibility(View.VISIBLE);
-
-            messageViewHolder.name.setText(messageOf.get(i).getName_of());
-            messageViewHolder.mesn.setText(messageOf.get(i).getMesg());
-            messageViewHolder.isOnlyEmoji(messageOf.get(i).getMesg());
-
-            Picasso.get().load(Uri.parse(messageOf.get(i).getUrlProfilePic())).placeholder(R.drawable.ic_avatar_default).fit().into(messageViewHolder.prf_pic);
-
-            Long codigoHora = messageOf.get(i).getHora();
-
-
-            try {
-
-                String text = getTimingt(codigoHora);
-                messageViewHolder.time.setText(text);
-            } catch (Exception e) {
-                e.printStackTrace();
-                messageViewHolder.time.setText("Incalculate");
-                Log.e(TAG, "onBindViewHolder: " + e.getMessage());
-            }
-
-          /*  Date d = new Date(codigoHora);
-
-            SimpleDateFormat ss = new SimpleDateFormat("hh:mm:ss a");
-*/
-
-
-            if (messageOf.get(i).getSnap().equals(idMain) && card_backcolorAssigned) {
-                messageViewHolder.backing.setCardBackgroundColor(card_main);
-                messageViewHolder.mesn.setTextColor(textColorM);
-                messageViewHolder.time.setTextColor(textColorM);
-                messageViewHolder.name.setTextColor(textColorM);
-            } else if (card_backcolorAssigned) {
-                // Log.e("MAIN", "onBindViewHolder: OTRO COLOR");
-                messageViewHolder.backing.setCardBackgroundColor(another_cards);
-                messageViewHolder.mesn.setTextColor(textColorMa);
-                messageViewHolder.time.setTextColor(textColorMa);
-                messageViewHolder.name.setTextColor(textColorMa);
-            }
-
-            if (messageOf.get(i).getType_mensaje().equals("1")) {
-
-                if (card_backcolorAssigned) {
-                    messageViewHolder.card_back.setCardBackgroundColor(card_backcolor);
-                }
-
-                messageViewHolder.mediaText.setVisibility(View.VISIBLE);
-                messageViewHolder.mediaPhoto.setVisibility(View.VISIBLE);
-                messageViewHolder.actionbtn.setVisibility(View.VISIBLE);
-                messageViewHolder.card_back.setVisibility(View.VISIBLE);
-
-
-                messageViewHolder.mediaText.setText(messageOf.get(i).getDescmedia());
-                messageViewHolder.actionbtn.setText(messageOf.get(i).getAction());
-
-                messageViewHolder.mesn.setGravity(Gravity.CENTER);
-
-
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                params.setMargins(0, 10, 0, 0);
-                messageViewHolder.mesn.setLayoutParams(params);
-
-                messageViewHolder.mesn.setTypeface(null, Typeface.BOLD);
-                messageViewHolder.mediaText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                messageViewHolder.mesn.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-
-
-                Picasso.get().load(Uri.parse(messageOf.get(i).getUrl_img_media())).into(messageViewHolder.mediaPhoto);
-
-                messageViewHolder.actionbtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        clickmedia.onClickMedia(messageOf.get(i).getDataToClick());
-                    }
-                });
-
-            } else {
-                messageViewHolder.mediaText.setVisibility(View.GONE);
-                messageViewHolder.mediaPhoto.setVisibility(View.GONE);
-                messageViewHolder.actionbtn.setVisibility(View.GONE);
-                messageViewHolder.card_back.setVisibility(View.GONE);
-            }
+setupNormalMessage(messageViewHolder, i);
         } else if (messageOf.get(i).getIsAdmin().equals("true")) {
             YoYo.with(Techniques.SlideInDown)
                     .duration(1500)
@@ -326,9 +185,9 @@ if(!mf.getSnap().equals(nk.getIdentifier())) {
         }
     }
 
-    private void goChatPrivate(final MessageReceive mf) {
+    private void goChatPrivate(final MessageReceive mf, final int i) {
 
-        Utils.createPopUpContact(mContext, new Utils.selectionListener() {
+        Utils.createPopUpContact(mContext, mf,new Utils.SelectionListener() {
             @Override
             public void onConfirm() {
              ChanInfo chanInfo = ChangeFragment.getChanInf(mf.getSnap());
@@ -346,6 +205,13 @@ if(!mf.getSnap().equals(nk.getIdentifier())) {
             @Override
             public void onCancel() {
 
+            }
+
+            @Override
+            public void OnBanUser() {
+                super.OnBanUser();
+                Utils.banThis(mf.getSnap());
+                removeMessage(i);
             }
         });
 
@@ -440,11 +306,14 @@ if(!mf.getSnap().equals(nk.getIdentifier())) {
         // long pastvalue = Long.parseLong(codigoHora);
         // Default time zone.
         DateTime zulu = DateTime.now(DateTimeZone.UTC);
-
-
-        //   Log.e(TAG, "getTimingt: MENSAJE "+pastvalue);
-
-        //     Log.e(TAG, "getTimingt: AHORA "+zulu.getMillis() + " NOW ES "+pastvalue);
+     //   DateTimeFormatter formatter = DateTimeFormat.forPattern("HH:mm:ss am");
+        Date date = new Date(pastvalue);
+// formattter
+        SimpleDateFormat formatter= new SimpleDateFormat("hh:mm a");
+        formatter.setTimeZone(TimeZone.getDefault());
+// Pass date object
+        return formatter.format(date );
+        /*
         long mint = TimeUnit.MILLISECONDS.toMinutes(zulu.toInstant().getMillis() - pastvalue);
 
         if (mint < 60) {
@@ -470,7 +339,7 @@ if(!mf.getSnap().equals(nk.getIdentifier())) {
             }
 
 
-        }
+        }*/
     }
 
     @Override
@@ -489,6 +358,7 @@ if(!mf.getSnap().equals(nk.getIdentifier())) {
         private TextView mediaText;
         private ImageView mediaPhoto;
         private EmojiconTextView mesn;
+        private EmojiconTextView mesnAnother;
         private CardView backing;
         private LinearLayout adView;
         private AdView adView2;
@@ -503,6 +373,7 @@ if(!mf.getSnap().equals(nk.getIdentifier())) {
             super(itemView);
             base = itemView.findViewById(R.id.baselay);
             img_admin = itemView.findViewById(R.id.admin_insigne);
+            mesnAnother = itemView.findViewById(R.id.t_messg_another);
             prf_pic = itemView.findViewById(R.id.prof_ic);
             name = itemView.findViewById(R.id.t_name);
             time = itemView.findViewById(R.id.t_time);
@@ -558,6 +429,10 @@ if(!mf.getSnap().equals(nk.getIdentifier())) {
         notifyItemInserted(messageOf.size() - 1);
     }
 
+    public void removeMessage(int pos) {
+        messageOf.remove(pos);
+        notifyItemRemoved(pos);
+    }
 
     private void showBannerAd(MessageViewHolder messageViewHolder) {
         messageViewHolder.adView.setVisibility(View.VISIBLE);
@@ -577,5 +452,210 @@ if(!mf.getSnap().equals(nk.getIdentifier())) {
     private void showNativeAd(MessageViewHolder messageViewHolder) {
         messageViewHolder.native_view.setVisibility(View.VISIBLE);
         messageViewHolder.adve.setVisibility(View.VISIBLE);
+    }
+
+    private void isMainUser(MessageViewHolder messageViewHolder){
+        messageViewHolder.mesnAnother.setVisibility(View.GONE);
+
+        LinearLayout.LayoutParams l = (LinearLayout.LayoutParams) messageViewHolder.backing.getLayoutParams();
+
+        l.gravity = Gravity.END;
+
+        messageViewHolder.backing.setLayoutParams(l);
+        messageViewHolder.mesn.setVisibility(View.GONE);
+        messageViewHolder.prf_pic.setVisibility(View.GONE);
+        messageViewHolder.name.setVisibility(View.GONE);
+        messageViewHolder.mesn.setVisibility(View.VISIBLE);
+    }
+
+    private void NoMain(MessageViewHolder messageViewHolder){
+        messageViewHolder.mesnAnother.setVisibility(View.VISIBLE);
+
+        LinearLayout.LayoutParams l = (LinearLayout.LayoutParams) messageViewHolder.backing.getLayoutParams();
+
+        l.gravity = Gravity.START;
+
+        messageViewHolder.backing.setLayoutParams(l);
+
+        messageViewHolder.name.setVisibility(View.VISIBLE);
+        messageViewHolder.mesn.setVisibility(View.VISIBLE);
+        messageViewHolder.prf_pic.setVisibility(View.VISIBLE);
+        messageViewHolder.mesn.setVisibility(View.GONE);
+    }
+
+    private void setupNormalMessage(MessageViewHolder messageViewHolder, final int i){
+
+
+
+        final MessageReceive mf = messageOf.get(i);
+        if (isAdminUser) {
+            //   Log.e(TAG, "onBindViewHolder: si es admin");
+            messageViewHolder.name.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.clickingMessage(mf.getName_of());
+                }
+            });
+        } else {
+            messageViewHolder.backing.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Log.e(TAG, "onClick: clicked" );
+                    if(!mf.getSnap().equals(nk.getIdentifier())) {
+                        if (ChangeFragment.checkAvailibity(mf.getSnap())) {
+                            Utils.createPopUpContact(mContext, mf,new Utils.SelectionListener() {
+                                @Override
+                                public void onConfirm() {
+                                    ChanInfo chanInfo = new ChanInfo();
+
+                                    chanInfo.identifierChannel = nk.getIdentifier() + "-chat-" + mf.getSnap();
+                                    chanInfo.channelName = "Chat " + nk.getNamef() + " & " + mf.getName_of();
+                                    // nk.setLang_chat();
+                                    NamkoFragment.chanInfo = chanInfo;
+                                    nk.setLang_chat(chanInfo.identifierChannel);
+
+                                    ChangeFragment.processNewChan(chanInfo);
+
+                                    fragmentManager.beginTransaction().replace(nk.ContainerId, nk).commitAllowingStateLoss();
+
+
+                                }
+
+                                @Override
+                                public void onCancel() {
+
+                                }
+
+                                @Override
+                                public void OnBanUser() {
+                                    super.OnBanUser();
+                                    Utils.banThis(mf.getSnap());
+                                   removeMessage(i);
+                                }
+                            });
+
+                        } else {
+
+                            if (!ChangeFragment.checkIsSameChan(nk.getIdentifier())) {
+                                goChatPrivate(mf, i);
+                            }
+
+
+
+                        }
+                    }
+                }
+            });
+        }
+
+        if(isBanned(mf.getSnap())){
+            messageViewHolder.itemView.setVisibility(View.GONE);
+        }
+
+
+        hideBannerAd(messageViewHolder);
+        hideNativeAd(messageViewHolder, i);
+        messageViewHolder.base.setVisibility(View.VISIBLE);
+
+
+
+        messageViewHolder.isOnlyEmoji(messageOf.get(i).getMesg());
+
+
+
+        Long codigoHora = messageOf.get(i).getHora();
+
+
+        try {
+
+            String text = getTimingt(codigoHora);
+            messageViewHolder.time.setText(text);
+        } catch (Exception e) {
+            e.printStackTrace();
+            messageViewHolder.time.setText("Incalculate");
+            Log.e(TAG, "onBindViewHolder: " + e.getMessage());
+        }
+
+        if(isMain(i)){
+            messageViewHolder.mesn.setText(messageOf.get(i).getMesg());
+            isMainUser(messageViewHolder);
+            YoYo.with(Techniques.SlideInLeft)
+                    .duration(1000)
+                    .playOn(messageViewHolder.base);
+        }else{
+            YoYo.with(Techniques.SlideInRight)
+                    .duration(1000)
+                    .playOn(messageViewHolder.base);
+            NoMain(messageViewHolder);
+            messageViewHolder.mesnAnother.setText(messageOf.get(i).getMesg());
+            Picasso.get().load(Uri.parse(messageOf.get(i).getUrlProfilePic())).placeholder(R.drawable.ic_avatar_default).fit().into(messageViewHolder.prf_pic);
+            messageViewHolder.name.setText(messageOf.get(i).getName_of());
+        }
+
+          /*  Date d = new Date(codigoHora);
+
+            SimpleDateFormat ss = new SimpleDateFormat("hh:mm:ss a");
+*/
+
+
+        if (isMain(i) && card_backcolorAssigned) {
+            messageViewHolder.backing.setCardBackgroundColor(card_main);
+            messageViewHolder.mesn.setTextColor(textColorM);
+            messageViewHolder.time.setTextColor(textColorM);
+            messageViewHolder.name.setTextColor(textColorM);
+        } else if (card_backcolorAssigned) {
+            // Log.e("MAIN", "onBindViewHolder: OTRO COLOR");
+            messageViewHolder.backing.setCardBackgroundColor(another_cards);
+            messageViewHolder.mesn.setTextColor(textColorMa);
+            messageViewHolder.time.setTextColor(textColorMa);
+            messageViewHolder.name.setTextColor(textColorMa);
+        }
+
+        if (messageOf.get(i).getType_mensaje().equals("1")) {
+
+            if (card_backcolorAssigned) {
+                messageViewHolder.card_back.setCardBackgroundColor(card_backcolor);
+            }
+
+            messageViewHolder.mediaText.setVisibility(View.VISIBLE);
+            messageViewHolder.mediaPhoto.setVisibility(View.VISIBLE);
+            messageViewHolder.actionbtn.setVisibility(View.VISIBLE);
+            messageViewHolder.card_back.setVisibility(View.VISIBLE);
+
+
+            messageViewHolder.mediaText.setText(messageOf.get(i).getDescmedia());
+            messageViewHolder.actionbtn.setText(messageOf.get(i).getAction());
+
+            messageViewHolder.mesn.setGravity(Gravity.CENTER);
+
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            params.setMargins(0, 10, 0, 0);
+            messageViewHolder.mesn.setLayoutParams(params);
+
+            messageViewHolder.mesn.setTypeface(null, Typeface.BOLD);
+            messageViewHolder.mediaText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            messageViewHolder.mesn.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+
+            Picasso.get().load(Uri.parse(messageOf.get(i).getUrl_img_media())).into(messageViewHolder.mediaPhoto);
+
+            messageViewHolder.actionbtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    clickmedia.onClickMedia(messageOf.get(i).getDataToClick());
+                }
+            });
+
+        } else {
+            messageViewHolder.mediaText.setVisibility(View.GONE);
+            messageViewHolder.mediaPhoto.setVisibility(View.GONE);
+            messageViewHolder.actionbtn.setVisibility(View.GONE);
+            messageViewHolder.card_back.setVisibility(View.GONE);
+        }
+    }
+
+    public boolean isMain(int pos){
+       return messageOf.get(pos).getSnap().equals(idMain);
     }
 }

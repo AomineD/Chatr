@@ -12,14 +12,24 @@
         android:label="dada"
         android:roundIcon="@drawable/arrow_back"
         android:supportsRtl="true"
+        tools:replace="android:label"
         android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
+
+        <service
+            android:name=".MyFirebaseServMess"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-3940256099942544~3347511713"/>
 
-        <activity android:name="com.app.namko.MainActivity">
+        <activity android:name="com.app.namko.MainActivity" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

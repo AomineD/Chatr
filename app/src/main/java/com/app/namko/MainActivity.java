@@ -1,83 +1,77 @@
 package com.app.namko;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
 
-import com.app.chat.ChangeFragment;
-import com.app.chat.NamkoFragment;
-import com.app.chat.adapter.ChannelAdapter;
+
+import com.app.chat.utils.NamkoFragment;
 import com.app.chat.model.ChanInfo;
+import com.app.chat.utils.NamkoChat;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    private NamkoFragment fr;
 
+    ArrayList<String> validUrls = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+/*
+        validUrls.add("https://multiupload.live/embed/Hk6rht47exhIJ4c8/*");
+        validUrls.add("https://multiupload.live/embed/*");
+        WebView webView = findViewById(R.id.webview);
+webView.setWebViewClient(new WebViewClient(){
+    @Override
+    public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+        if (isValidUrl(request.getUrl().toString())) {
+            return false;
+        }
+        Log.e("MAIN", "shouldOverrideUrlLoading: no es valida" );
+        return true;
+    }
+});
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
+webView.getSettings().setJavaScriptEnabled(true);
 
-        fr = new NamkoFragment();
+       // webView.setProvider(AdblockHelper.get().getProvider());
+        webView.loadUrl("https://multiupload.live/embed/Hk6rht47exhIJ4c8/");*/
 
+      //  startActivity(new Intent(this, ChatterActivity.class));
+        ArrayList<ChanInfo> chanInfos = new ArrayList<>();
+        ChanInfo a = new ChanInfo();
+        a.channelName = "GENERAL";
+        a.identifierChannel = "GENERAL";
 
-        fr.setLang_chat("Español \uD83C\uDDEA\uD83C\uDDF8");
-        fr.setNameP("kai", new NamkoFragment.onBanUser() {
-            @Override
-            public void whenBanUser(String username) {
+        ChanInfo a2 = new ChanInfo();
+        a2.channelName = "GENERAL 2";
+        a2.identifierChannel = "GENERAL 2";
+        chanInfos.add(a);
+        chanInfos.add(a2);
 
+NamkoFragment namkoFragment = new NamkoFragment.Builder(chanInfos, a.channelName)
+        .setUserAutomatic()
+        .setTextInRegister("Hola, registrate en nuestra app ahora")
+        .build();
+
+        NamkoChat.init(this, namkoFragment);
+    }
+
+    private boolean isValidUrl(String url) {
+        for (String validUrl : validUrls) {
+            Pattern pattern = Pattern.compile(validUrl, Pattern.MULTILINE);
+            Matcher matcher = pattern.matcher(url);
+            if (matcher.find()) {
+                return true;
             }
-        }, new NamkoFragment.onClickBackListener() {
-            @Override
-            public void onClicked() {
-
-            }
-        });
-       /* fr.setWithAds(true, true, "");
-        ArrayList<String> idsnativ = new ArrayList<>();
-        fr.setId_native_banner(idsnativ);*/
-        // fr.setDebg(true);
-        //  kai  kee206
-
-        fr.setIdentifier(true, R.id.frg);
-
-        ArrayList<String> idsnative = new ArrayList<>();
-
-        idsnative.add("410359413142447_626423458202707");
-
-        fr.setId_native_banner(idsnative);
-
-        fr.setWithAds(true, true, "");
-
-
-
-        ArrayList<ChanInfo> sds = new ArrayList<>();
-
-        ChanInfo chanInfo = new ChanInfo();
-        chanInfo.identifierChannel = "Español \uD83C\uDDEA\uD83C\uDDF8";
-        chanInfo.channelName = "Español \uD83C\uDDEA\uD83C\uDDF8";
-
-        ChanInfo chanInfo2 = new ChanInfo();
-        chanInfo2.identifierChannel = "Latino \uD83C\uDDF2\uD83C\uDDFD";
-        chanInfo2.channelName = "Latino \uD83C\uDDF2\uD83C\uDDFD";
-
-        // ChangeFragment.setListChannels(sds);
-        sds.add(chanInfo);
-        sds.add(chanInfo2);
-
-     ChangeFragment.setListChannels(sds);
-        //
-        fr.isAdminSender = false;
-
-        fragmentManager.beginTransaction().replace(R.id.frg, fr).commitAllowingStateLoss();
-
+        }
+        return false;
     }
 
 

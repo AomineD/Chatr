@@ -6,8 +6,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,7 +17,7 @@ import android.view.animation.Animation;
 
 import com.app.chat.adapter.ChannelAdapter;
 import com.app.chat.model.ChanInfo;
-import com.labo.kaji.fragmentanimations.CubeAnimation;
+import com.app.chat.utils.NamkoFragment;
 import com.labo.kaji.fragmentanimations.MoveAnimation;
 
 import java.util.ArrayList;
@@ -78,9 +76,9 @@ public class ChangeFragment extends Fragment {
     @Override
     public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
         if (enter) {
-            return MoveAnimation.create(MoveAnimation.LEFT, enter, 1100);
+            return MoveAnimation.create(MoveAnimation.LEFT, enter, 600);
         } else {
-            return MoveAnimation.create(MoveAnimation.RIGHT, enter, 1100);
+            return MoveAnimation.create(MoveAnimation.RIGHT, enter, 600);
         }
     }
 
@@ -97,12 +95,13 @@ public class ChangeFragment extends Fragment {
     }
 
     public static void processNewChan(ChanInfo chanInfo){
+      //  Log.e("MAIN", "processNewChan: "+chanInfo.identifierChannel );
         if(getListChannels().size() < 1){
             getListChannels().add(chanInfo);
         }else {
 boolean haveChan = false;
             for (int i = 0; i < getListChannels().size(); i++) {
-               //  Log.e("MAIN", "processNewChan: "+getListChannels().get(i).identifierChannel );
+            //     Log.e("MAIN", "processNewChan: "+getListChannels().get(i).identifierChannel );
                 if (getListChannels().get(i).identifierChannel.equals(chanInfo.identifierChannel)) {
                    haveChan = true;
                 }
@@ -142,6 +141,13 @@ boolean haveChan = false;
         super.onViewCreated(view, savedInstanceState);
 
         recyclerView = view.findViewById(R.id.rec_channels);
+        view.findViewById(R.id.back_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(getFragmentManager() != null)
+                getFragmentManager().popBackStack();
+            }
+        });
 
         channelAdapter = new ChannelAdapter(getActivity(), new onChangeChannelListener() {
             @Override
@@ -160,6 +166,7 @@ boolean haveChan = false;
         channelAdapter.setSelected(selectedChannel);
 
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+
         recyclerView.setAdapter(channelAdapter);
 
     }

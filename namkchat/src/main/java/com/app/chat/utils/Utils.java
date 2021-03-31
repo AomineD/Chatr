@@ -10,7 +10,13 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RestrictTo;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.app.chat.R;
+import com.app.chat.chat.ClickBottom;
+import com.app.chat.model.MessageReceive;
+import com.wineberryhalley.bclassapp.TinyDB;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,89 +32,25 @@ import me.samlss.timomenu.view.TimoItemView;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
 import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
+import static androidx.annotation.RestrictTo.Scope.LIBRARY;
+
+@RestrictTo(LIBRARY)
 public class Utils {
-    private static List<TimoItemViewParameter> getCenterChatNoise(int itemWidth){
-        List<TimoItemViewParameter> listTop = new ArrayList<>();
-        TimoItemViewParameter yes = getTimoItemViewParameter(itemWidth, R.drawable.confirm_ic,
-                R.drawable.confirm_ic, R.string.confirm, R.color.colorPrimaryDark,
-                R.color.colorPrimary);
 
-        TimoItemViewParameter nu = getTimoItemViewParameter(itemWidth, R.drawable.cancel_ic,
-                R.drawable.cancel_ic, R.string.dontwant, android.R.color.darker_gray,
-                R.color.black);
+    static TinyDB tinyDB;
 
 
-        listTop.add(yes);
-        listTop.add(nu);
-        return listTop;
+
+    public static class SelectionListener{
+       public void onConfirm(){}
+        public void onCancel(){}
+        public void OnBanUser(){}
     }
-
-
-    private static TimoItemViewParameter getTimoItemViewParameter(int itemWidth,
-                                                                 int normalImageRes,
-                                                                 int highlightImageRes,
-                                                                 int normalTextRes,
-                                                                 int normalTextColorRes,
-                                                                 int highlightTextColorRes){
-        return new TimoItemViewParameter.Builder()
-                .setWidth(itemWidth)
-                .setImagePadding(new Rect(10, 10, 10, 10))
-                .setTextPadding(new Rect(5, 0, 5, 0))
-                .setNormalImageRes(normalImageRes)
-                .setHighlightedImageRes(highlightImageRes)
-                .setNormalTextRes(normalTextRes)
-                .setNormalTextColorRes(normalTextColorRes)
-                .setHighlightedTextColorRes(highlightTextColorRes)
-                .build();
-
-    }
-
-
-    public interface selectionListener{
-        void onConfirm();
-        void onCancel();
-    }
-    public static void createPopUpContact(Activity c, final selectionListener listener)
+    public static void createPopUpContact(Activity c, MessageReceive ms, final SelectionListener listener)
     {
-        int itemViewWidth = (c.getWindow().getWindowManager().getDefaultDisplay().getWidth() - 30) / 2;
-
-
-
-     final TimoMenu   mTimoMenu =  new TimoMenu.Builder(c)
-                .setGravity(Gravity.CENTER)
-                .setTimoMenuListener(new TimoMenuListener() {
-                    @Override
-                    public void onShow() {
-                     //   Toast.makeText(getApplicationContext(), "Show", Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onDismiss() {
-                       // Toast.makeText(getApplicationContext(), "Dismiss", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .setTimoItemClickListener(new OnTimoItemClickListener() {
-                    @Override
-                    public void onItemClick(int row, int index, TimoItemView view) {
-                     //   Toast.makeText(getApplicationContext(), String.format("%s click~", getString(MenuHelper.ROW_TEXT[row][index])), Toast.LENGTH_SHORT).show();
-                    if(index == 0){
-listener.onConfirm();
-                    timoMenu.dismiss();
-                    }else {
-                        listener.onCancel();
-                        timoMenu.dismiss();
-                    }
-                    }
-                })
-
-                .setMenuMargin(new Rect(20, 20, 20, 20))
-                .setMenuPadding(new Rect(0, 10, 0, 10))
-                .addRow(ScaleItemAnimation.create(), getCenterChatNoise(itemViewWidth))
-             .setHeaderLayoutRes(R.layout.header_popup)
-                //.addRow(ScaleItemAnimation.create(), getCenterChatNoise(itemViewWidth))
-                .build();
-     timoMenu = mTimoMenu;
-    mTimoMenu.show();
+        AppCompatActivity a = (AppCompatActivity) c;
+        ClickBottom clickBottom = new ClickBottom(listener, ms);
+        clickBottom.show(a.getSupportFragmentManager(), "clkas");
     }
 
     private static TimoMenu timoMenu;
@@ -167,7 +109,42 @@ listener.onConfirm();
 private static String key_usern = "KALALSLAKAKA";
 private static String key_identifier = "LLWKQKASAS";
 private static String key_saved = "KASKASKSAK";
+private static String key_banneds = "MNWQFFAFASF";
 
+public static void banThis(String identifier){
+if(tinyDB != null){
+    ArrayList<String> ident = tinyDB.getListString(key_banneds);
+boolean has = false;
+    for (String id:
+         ident) {
+        if(id.equalsIgnoreCase(identifier)){
+            has = true;
+        }
+    }
+
+    if(!has){
+        ident.add(identifier);
+    }
+
+    tinyDB.putListString(key_banneds, ident);
+
+}
+}
+
+public static boolean isBanned(String ident){
+  if(tinyDB != null){
+      ArrayList<String> identa = tinyDB.getListString(key_banneds);
+
+      for (String id:
+              identa) {
+          if(id.equalsIgnoreCase(ident)){
+              return true;
+          }
+      }
+
+  }
+    return false;
+}
 
     public static void saveData(String identifier, String user_name){
 
@@ -187,5 +164,13 @@ preferences.edit().putBoolean(key_saved, true).apply();
     
     public static boolean isUserSaved(){
         return preferences.getBoolean(key_saved, false);
+    }
+
+    public static boolean isAdmobAd(String ad){
+        return ad.length() == 38;
+    }
+
+    public static boolean isAudienceAd(String ad){
+        return ad.length() == 31;
     }
 }

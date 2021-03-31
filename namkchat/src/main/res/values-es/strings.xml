@@ -33,4 +33,12 @@
     <string name="got_it">Ok!</string>
     <string name="emoji_info">Nuevo boton de emojis :)</string>
     <string name="change_info">Ahora puedes cambiar entre otros chats</string>
+
+
+    <string name="chat_info">Ahora puedes compartir con nuestra comunidad tus ideas, peliculas y series favoritas, recuerda respetar a todos nos hace una mejor comunidad</string>
+    <string name="username">Nombre de usuario</string>
+    <string name="go_home">Unirse</string>
+    <string name="_default_options">Opciones</string>
+    <string name="chat_with">Chatear con %s</string>
+    <string name="ban_user">Bloquear a %s</string>
 </resources>
